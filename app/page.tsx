@@ -133,32 +133,32 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">AP Computer Science A</h1>
-          <p className="text-xl text-gray-600 mb-4">Interactive Learning Platform</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">AP Computer Science A</h1>
+          <p className="text-xl text-muted-foreground mb-4">Interactive Learning Platform</p>
           <div className="flex items-center justify-center gap-4">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-blue-600" />
-              <span className="text-sm text-gray-600">11 Modules</span>
+              <BookOpen className="h-5 w-5 text-blue-400" />
+              <span className="text-sm text-muted-foreground">11 Modules</span>
             </div>
             <div className="flex items-center gap-2">
-              <Code className="h-5 w-5 text-green-600" />
-              <span className="text-sm text-gray-600">Interactive Coding</span>
+              <Code className="h-5 w-5 text-green-400" />
+              <span className="text-sm text-muted-foreground">Interactive Coding</span>
             </div>
             <div className="flex items-center gap-2">
-              <Play className="h-5 w-5 text-purple-600" />
-              <span className="text-sm text-gray-600">Code Runner</span>
+              <Play className="h-5 w-5 text-purple-400" />
+              <span className="text-sm text-muted-foreground">Code Runner</span>
             </div>
           </div>
         </div>
 
         <div className="mb-8">
-          <div className="bg-white rounded-lg p-6 shadow-sm">
+          <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Overall Progress</h2>
-              <span className="text-sm text-gray-600">0% Complete</span>
+              <h2 className="text-lg font-semibold text-card-foreground">Overall Progress</h2>
+              <span className="text-sm text-muted-foreground">0% Complete</span>
             </div>
             <Progress value={0} className="h-2" />
           </div>
@@ -168,7 +168,7 @@ export default function HomePage() {
           {modules.map((module) => (
             <Card
               key={module.id}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
+              className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-border ${
                 module.unlocked ? "hover:scale-105" : "opacity-60"
               }`}
               onClick={() => handleModuleClick(module.id)}
@@ -177,21 +177,21 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div className={`w-3 h-3 rounded-full ${module.color}`} />
                   {module.unlocked ? (
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className="h-5 w-5 text-green-400" />
                   ) : (
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-muted-foreground" />
                   )}
                 </div>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-lg text-card-foreground">
                   Module {module.id}: {module.title}
                 </CardTitle>
-                <CardDescription className="text-sm">{module.description}</CardDescription>
+                <CardDescription className="text-sm text-muted-foreground">{module.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Progress</span>
-                    <span className="font-medium">
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="font-medium text-card-foreground">
                       {module.completed}/{module.lessons} lessons
                     </span>
                   </div>
@@ -212,9 +212,9 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="mt-12 bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Quick Practice</h2>
-          <p className="text-gray-600 mb-4">Try out the code editor with a simple Java program:</p>
+        <div className="mt-12 bg-card rounded-lg p-6 shadow-sm border border-border">
+          <h2 className="text-xl font-semibold mb-4 text-card-foreground">Quick Practice</h2>
+          <p className="text-muted-foreground mb-4">Try out the code editor with a simple Java program:</p>
           <CodeEditor
             initialCode={`public class HelloWorld {
     public static void main(String[] args) {
