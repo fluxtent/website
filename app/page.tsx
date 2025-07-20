@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { BookOpen, Code, CheckCircle, Lock, Play } from "lucide-react"
 import CodeEditor from "@/components/code-editor"
 import LessonViewer from "@/components/lesson-viewer"
+import Settings from "@/components/settings"
 
 const modules = [
   {
@@ -134,6 +135,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Settings />
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">AP Computer Science A</h1>
@@ -214,14 +216,21 @@ export default function HomePage() {
 
         <div className="mt-12 bg-card rounded-lg p-6 shadow-sm border border-border">
           <h2 className="text-xl font-semibold mb-4 text-card-foreground">Quick Practice</h2>
-          <p className="text-muted-foreground mb-4">Try out the code editor with a simple Java program:</p>
+          <p className="text-muted-foreground mb-4">Try out the multi-file code editor with Java programs:</p>
           <CodeEditor
-            initialCode={`public class HelloWorld {
+            initialCode={`public class Main {
     public static void main(String[] args) {
+        Calculator calc = new Calculator();
+        Student student = new Student("Alice", 17);
+        
         System.out.println("Hello, AP Computer Science!");
+        System.out.println("5 + 3 = " + calc.add(5, 3));
+        System.out.println("Student: " + student.getName() + ", Age: " + student.getAge());
     }
 }`}
-            expectedOutput="Hello, AP Computer Science!"
+            expectedOutput={`Hello, AP Computer Science!
+5 + 3 = 8
+Student: Alice, Age: 17`}
             readOnly={false}
           />
         </div>

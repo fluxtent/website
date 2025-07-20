@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, BookOpen, Code2, CheckCircle } from "lucide-react"
 import CodeEditor from "@/components/code-editor"
+import Settings from "@/components/settings"
 
 interface Lesson {
   id: number
@@ -154,6 +155,7 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
   if (!currentLesson) {
     return (
       <div className="min-h-screen bg-background p-8">
+        <Settings />
         <div className="container mx-auto">
           <Button onClick={onBack} variant="outline" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -172,6 +174,7 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <Settings />
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="outline">

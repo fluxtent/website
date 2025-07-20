@@ -3,44 +3,91 @@ import fs from "fs"
 import { exec } from "child_process"
 import path from "path"
 
+interface JavaFile {
+  name: string
+  content: string
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" })
   }
 
-  const { code } = req.body
+  const { files, mainClass } = req.body
 
-  let className = "Main"
-
-  const classMatch = code.match(/public\s+class\s+(\w+)/)
-  if (classMatch && classMatch[1]) {
-    className = classMatch[1]
+  if (!files || !Array.isArray(files) || files.length === 0) {
+    return res.status(400).json({ error: "No files provided" })
   }
-  console.log("Using className:", className)
-  const javaFilePath = path.join("/tmp", `${className}.java`)
 
-  fs.writeFileSync(javaFilePath, code)
+  if (!mainClass) {
+    return res.status(400).json({ error: "No main class specified" })
+  }
 
-  const compileCommand = `javac ${javaFilePath}`
-  const runCommand = `java -cp /tmp ${className}`
+  console.log("Using mainClass:", mainClass)
+  console.log("Files:", files.map(f => f.name))
 
-  exec(compileCommand, (compileError, stdout, stderr) => {
-    if (compileError || stderr) {
-      return res.status(200).json({ output: `Compilation Error:\n${stderr}` })
+  const tmpDir = "/tmp"
+  const javaFiles: string[] = []
+
+  try {
+    // Write all Java files
+    for (const file of files) {
+      const javaFilePath = path.join(tmpDir, file.name)
+      fs.writeFileSync(javaFilePath, file.content)
+      javaFiles.push(javaFilePath)
     }
 
-    exec(runCommand, (runError, runStdout, runStderr) => {
-      if (runError || runStderr) {
-        return res.status(200).json({ output: `Runtime Error:\n${runStderr}` })
+    // Compile all files
+    const compileCommand = `javac ${javaFiles.join(" ")}`
+
+    exec(compileCommand, (compileError, stdout, stderr) => {
+      if (compileError || stderr) {
+        // Clean up files
+        javaFiles.forEach(filePath => {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath)
+          }
+          const classFilePath = filePath.replace(".java", ".class")
+          if (fs.existsSync(classFilePath)) {
+            fs.unlinkSync(classFilePath)
+          }
+        })
+        return res.status(200).json({ output: `Compilation Error:\n${stderr}` })
       }
 
-      res.status(200).json({ output: runStdout })
+      // Run the main class
+      const runCommand = `java -cp ${tmpDir} ${mainClass}`
 
-      fs.unlinkSync(javaFilePath)
-      const classFilePath = javaFilePath.replace(".java", ".class")
+      exec(runCommand, (runError, runStdout, runStderr) => {
+        // Clean up files
+        javaFiles.forEach(filePath => {
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath)
+          }
+          const classFilePath = filePath.replace(".java", ".class")
+          if (fs.existsSync(classFilePath)) {
+            fs.unlinkSync(classFilePath)
+          }
+        })
+
+        if (runError || runStderr) {
+          return res.status(200).json({ output: `Runtime Error:\n${runStderr}` })
+        }
+
+        res.status(200).json({ output: runStdout })
+      })
+    })
+  } catch (error) {
+    // Clean up files on error
+    javaFiles.forEach(filePath => {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+      }
+      const classFilePath = filePath.replace(".java", ".class")
       if (fs.existsSync(classFilePath)) {
         fs.unlinkSync(classFilePath)
       }
     })
-  })
+    return res.status(500).json({ error: `Server error: ${error}` })
+  }
 }
