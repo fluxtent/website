@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
+import ThemeClientWrapper from '@/components/providers/theme-client-wrapper'
 
 export const metadata: Metadata = {
   title: 'AP Computer Science A - Interactive Learning Platform',
@@ -15,15 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange={false}
-          themes={["light", "dark", "ocean", "forest"]}
-        >
-          {children}
-        </ThemeProvider>
+        <ThemeClientWrapper>{children}</ThemeClientWrapper>
       </body>
     </html>
   )

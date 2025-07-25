@@ -26,6 +26,9 @@ type TabLayout = "horizontal" | "vertical-left" | "vertical-right"
 
 interface CodeEditorProps {
   readOnly?: boolean
+  expectedOutput?: string
+  testCases?: string[]
+  onSuccess?: () => void
 }
 
 const initialCode = `public class Main {
@@ -38,7 +41,12 @@ const initialCode = `public class Main {
     }
 }`
 
-export default function CodeEditor({ readOnly = false }: CodeEditorProps) {
+export default function CodeEditor({
+  readOnly = false,
+  expectedOutput,
+  testCases = [],
+  onSuccess
+}: CodeEditorProps) {
   const [files, setFiles] = useState<JavaFile[]>([
     {
       id: "1",
@@ -165,6 +173,10 @@ export default function CodeEditor({ readOnly = false }: CodeEditorProps) {
       
       const data = await response.json()
       setOutput(data.output)
+      if (expectedOutput && data.output.trim() === expectedOutput.trim()) {
+      setAllTestsPassed(true)
+      if (onSuccess) onSuccess()
+    }
     } catch (error) {
       setOutput(`Error: ${error}`)
     }
@@ -512,38 +524,38 @@ export default function CodeEditor({ readOnly = false }: CodeEditorProps) {
       </Card>
 
       {output && (
-        <Card className="border-border">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg text-card-foreground">Output</CardTitle>
-              {/* expectedOutput && (
-                <Badge variant={outputMatchesExpected ? "default" : "secondary"}>
-                  {outputMatchesExpected ? (
-                    <>
-                      <Check className="h-3 w-3 mr-1" />
-                      Correct!
-                    </>
-                  ) : (
-                    <>
-                      <X className="h-3 w-3 mr-1" />
-                      Try Again
-                    </>
-                  )}
-                </Badge>
-              ) */}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <pre className="bg-muted p-3 rounded text-sm font-mono whitespace-pre-wrap border border-border text-card-foreground">{output}</pre>
-            {/* expectedOutput && (
-              <div className="mt-3 p-3 bg-accent rounded border border-border">
-                <p className="text-sm font-medium text-accent-foreground mb-1">Expected Output:</p>
-                <pre className="text-sm font-mono text-card-foreground">{expectedOutput}</pre>
+          <Card className="border-border">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg text-card-foreground">Output</CardTitle>
+                {expectedOutput && (
+                  <Badge variant={output.trim() === expectedOutput.trim() ? "default" : "secondary"}>
+                    {output.trim() === expectedOutput.trim() ? (
+                      <>
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Correct!
+                      </>
+                    ) : (
+                      <>
+                        <X className="h-3 w-3 mr-1" />
+                        Try Again
+                      </>
+                    )}
+                  </Badge>
+                )}
               </div>
-            ) */}
-          </CardContent>
-        </Card>
-      )}
+            </CardHeader>
+            <CardContent>
+              <pre className="bg-muted p-3 rounded text-sm font-mono whitespace-pre-wrap border border-border text-card-foreground">{output}</pre>
+              {expectedOutput && (
+                <div className="mt-3 p-3 bg-accent rounded border border-border">
+                  <p className="text-sm font-medium text-accent-foreground mb-1">Expected Output:</p>
+                  <pre className="text-sm font-mono text-card-foreground">{expectedOutput}</pre>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
       {/* testCases.length > 0 && testResults.length > 0 && (
         <Card className="border-border">
