@@ -29,6 +29,7 @@ interface CodeEditorProps {
   expectedOutput?: string
   testCases?: string[]
   onSuccess?: () => void
+  starterCode?: string
 }
 
 const initialCode = `public class Main {
@@ -45,49 +46,22 @@ export default function CodeEditor({
   readOnly = false,
   expectedOutput,
   testCases = [],
-  onSuccess
+  onSuccess,
+  starterCode
 }: CodeEditorProps) {
-  const [files, setFiles] = useState<JavaFile[]>([
-    {
-      id: "1",
-      name: "Main.java",
-      content: initialCode,
-    },
-    {
-      id: "2",
-      name: "Calculator.java",
-      content: `public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public int subtract(int a, int b) {
-        return a - b;
-    }
+
+const [files, setFiles] = useState<JavaFile[]>([
+  {
+    id: "1",
+    name: "Main.java",
+    content: starterCode || `public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello");
+  }
 }`,
-    },
-    {
-      id: "3",
-      name: "Student.java",
-      content: `public class Student {
-    private String name;
-    private int age;
-    
-    public Student(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-}`,
-    },
-  ])
+  }
+])
+
   const [activeFileId, setActiveFileId] = useState("1")
   const [output, setOutput] = useState("")
   const [isRunning, setIsRunning] = useState(false)
@@ -184,47 +158,18 @@ export default function CodeEditor({
   }
 
   const resetCode = () => {
-    setFiles([
-      {
-        id: "1",
-        name: "Main.java",
-        content: initialCode,
-      },
-      {
-        id: "2",
-        name: "Calculator.java",
-        content: `public class Calculator {
-    public int add(int a, int b) {
-        return a + b;
-    }
-    
-    public int subtract(int a, int b) {
-        return a - b;
-    }
+setFiles([
+  {
+    id: "1",
+    name: "Main.java",
+    content: starterCode || `public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello");
+  }
 }`,
-      },
-      {
-        id: "3",
-        name: "Student.java",
-        content: `public class Student {
-    private String name;
-    private int age;
-    
-    public Student(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public int getAge() {
-        return age;
-    }
-}`,
-      },
-    ])
+  }
+])
+
     setActiveFileId("1")
     setOutput("")
     setTestResults([])

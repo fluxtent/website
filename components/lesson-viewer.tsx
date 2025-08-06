@@ -155,13 +155,13 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold mb-3 text-card-foreground">Exercise:</h3>
                       <p className="text-muted-foreground mb-4">{currentLesson.exercise.description}</p>
-                      <CodeEditor
-                        initialCode={currentLesson.exercise.starterCode}
-                        readOnly={false}
-                        expectedOutput={currentLesson.exercise.expectedOutput}
-                        testCases={currentLesson.exercise.testCases}
-                        onSuccess={handleExerciseSuccess}
-                      />
+                        <CodeEditor
+                          starterCode={currentLesson.exercise.starterCode}
+                          readOnly={false}
+                          expectedOutput={currentLesson.exercise.expectedOutput}
+                          testCases={currentLesson.exercise.testCases}
+                          onSuccess={handleExerciseSuccess}
+                        />
                     </div>
                   )}
 
