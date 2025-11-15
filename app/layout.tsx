@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import ThemeClientWrapper from '@/components/providers/theme-client-wrapper'
+import NextAuthSessionProvider from '@/components/providers/session-provider'
 
 export const metadata: Metadata = {
   title: 'AP Computer Science A - Interactive Learning Platform',
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeClientWrapper>{children}</ThemeClientWrapper>
+        <NextAuthSessionProvider>
+          <ThemeClientWrapper>{children}</ThemeClientWrapper>
+        </NextAuthSessionProvider>
       </body>
     </html>
   )

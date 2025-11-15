@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Settings as SettingsIcon, Moon, Sun, Monitor, Palette } from "lucide-react"
 import { useTheme } from "next-themes"
+import AuthButton from "@/components/auth-button"
 
 const themes = [
   {
@@ -127,6 +128,16 @@ export default function Settings() {
                 )
               })}
             </div>
+          </div>
+          
+          <div className="pt-4 border-t">
+            <h3 className="text-lg font-semibold mb-3">Account</h3>
+            <div className="mb-4">
+              <AuthButton />
+            </div>
+            <p className="text-xs text-muted-foreground mb-4">
+              Sign in with Google to save your progress across devices
+            </p>
           </div>
           
           <div className="pt-4 border-t">

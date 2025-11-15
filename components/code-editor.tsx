@@ -13,7 +13,8 @@ import {
   X, 
   PanelLeft, 
   PanelRight, 
-  Layout
+  Layout,
+  CheckCircle
 } from "lucide-react"
 
 type JavaFile = {
@@ -147,10 +148,23 @@ const [files, setFiles] = useState<JavaFile[]>([
       
       const data = await response.json()
       setOutput(data.output)
-      if (expectedOutput && data.output.trim() === expectedOutput.trim()) {
-      setAllTestsPassed(true)
-      if (onSuccess) onSuccess()
-    }
+      
+      // Check if output matches expected output
+      if (expectedOutput) {
+        const outputTrimmed = data.output.trim()
+        const expectedTrimmed = expectedOutput.trim()
+        const matches = outputTrimmed === expectedTrimmed
+        
+        if (matches) {
+          setAllTestsPassed(true)
+          // Call onSuccess callback immediately to show checkmark
+          if (onSuccess) {
+            onSuccess() // Call immediately for instant feedback
+          }
+        } else {
+          setAllTestsPassed(false)
+        }
+      }
     } catch (error) {
       setOutput(`Error: ${error}`)
     }

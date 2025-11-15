@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,12 +14,78 @@ import { moduleContent } from "@/lib/module-content"
 interface LessonViewerProps {
   moduleId: number
   onBack: () => void
+  userProgress?: Record<number, { completed: number; lessons: Record<string, boolean> }>
+  onProgressUpdate?: () => void
 }
 
-export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
+export default function LessonViewer({ moduleId, onBack, userProgress, onProgressUpdate }: LessonViewerProps) {
+  const { data: session } = useSession()
   const lessons = moduleContent[moduleId] || []
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0)
+  const [completedLessons, setCompletedLessons] = useState<Record<string, boolean>>({})
   const currentLesson = lessons[currentLessonIndex]
+
+  const handleLessonComplete = useCallback(async (lessonId: string) => {
+    const lesson = lessons.find(l => l.id === lessonId)
+    if (!lesson) return
+    
+    lesson.completed = true
+    
+    // Save progress if user is signed in
+    if (session?.user && lessonId) {
+      try {
+        const response = await fetch("/api/progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            moduleId,
+            lessonId: lessonId,
+          }),
+        })
+        
+        if (response.ok) {
+          setCompletedLessons((prev) => ({
+            ...prev,
+            [lessonId]: true,
+          }))
+          
+          // Refresh progress in parent component
+          if (onProgressUpdate) {
+            setTimeout(() => onProgressUpdate(), 500)
+          }
+        }
+      } catch (error) {
+        console.error("Error saving progress:", error)
+      }
+    }
+  }, [session, moduleId, lessons, onProgressUpdate])
+
+  useEffect(() => {
+    // Load completed lessons from user progress
+    if (userProgress?.[moduleId]?.lessons) {
+      setCompletedLessons(userProgress[moduleId].lessons)
+      // Mark lessons as completed in the lessons array
+      lessons.forEach((lesson) => {
+        if (userProgress[moduleId].lessons[lesson.id]) {
+          lesson.completed = true
+        }
+      })
+    }
+  }, [moduleId, userProgress])
+
+  // Mark theory lessons as completed when viewed (after a short delay)
+  useEffect(() => {
+    if (currentLesson && currentLesson.type === 'theory' && session?.user && currentLesson.id) {
+      const timer = setTimeout(() => {
+        // Only mark as completed if not already completed
+        if (!completedLessons[currentLesson.id]) {
+          handleLessonComplete(currentLesson.id)
+        }
+      }, 2000) // Mark as completed after 2 seconds of viewing
+      
+      return () => clearTimeout(timer)
+    }
+  }, [currentLessonIndex, session, currentLesson, completedLessons, handleLessonComplete])
 
   const handleNext = () => {
     if (currentLessonIndex < lessons.length - 1) {
@@ -32,8 +99,19 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
     }
   }
 
-  const handleExerciseSuccess = () => {
-    lessons[currentLessonIndex].completed = true
+  const handleExerciseSuccess = async () => {
+    const lesson = lessons[currentLessonIndex]
+    if (lesson?.id) {
+      // Immediately update local state to show checkmark
+      setCompletedLessons((prev) => ({
+        ...prev,
+        [lesson.id]: true,
+      }))
+      lesson.completed = true
+      
+      // Then save to server
+      await handleLessonComplete(lesson.id)
+    }
   }
 
   if (!currentLesson) {
@@ -102,7 +180,7 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
                           {lesson.type === "practice" && <Code2 className="h-4 w-4" />}
                           <span className="text-sm font-medium">{lesson.title}</span>
                         </div>
-                        {lesson.completed && <CheckCircle className="h-4 w-4 text-green-400" />}
+                        {(lesson.completed || completedLessons[lesson.id]) && <CheckCircle className="h-4 w-4 text-green-400" />}
                       </div>
                       <Badge variant="secondary" className="mt-1 text-xs">
                         {lesson.type}
@@ -124,7 +202,7 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
                       {currentLesson.type}
                     </Badge>
                   </div>
-                  {currentLesson.completed && <CheckCircle className="h-6 w-6 text-green-400" />}
+                  {(currentLesson.completed || completedLessons[currentLesson.id]) && <CheckCircle className="h-6 w-6 text-green-400" />}
                 </div>
               </CardHeader>
               <CardContent>
@@ -153,7 +231,15 @@ export default function LessonViewer({ moduleId, onBack }: LessonViewerProps) {
 
                   {currentLesson.exercise && (
                     <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-3 text-card-foreground">Exercise:</h3>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-card-foreground">Exercise:</h3>
+                        {(currentLesson.completed || completedLessons[currentLesson.id]) && (
+                          <div className="flex items-center gap-2 text-green-500">
+                            <CheckCircle className="h-5 w-5" />
+                            <span className="text-sm font-medium">Completed!</span>
+                          </div>
+                        )}
+                      </div>
                       <p className="text-muted-foreground mb-4">{currentLesson.exercise.description}</p>
                         <CodeEditor
                           starterCode={currentLesson.exercise.starterCode}

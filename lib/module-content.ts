@@ -85,7 +85,11 @@ She said, "Hello!"
       content: `Print your name and age on separate lines using two println statements.`,
       exercise: {
         description: "Print your name and age on separate lines.",
-        starterCode: `// Your code here\n`,
+        starterCode: `public class Main {
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
         expectedOutput: "My name is Alex.\nI am 16.",
         testCases: ["My name is Alex.", "I am 16."],
       }
@@ -97,7 +101,11 @@ She said, "Hello!"
       content: `Print the exact sentence: He said, \"Java is cool!\"`,
       exercise: {
         description: "Print this exactly: He said, \"Java is cool!\"",
-        starterCode: `// Your code here\n`,
+        starterCode: `public class Main {
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
         expectedOutput: `He said, "Java is cool!"`,
         testCases: ["He said, \"Java is cool!\""],
       }
@@ -145,10 +153,10 @@ She said, "Hello!"
         exercise: {
           description: "Use String and int variables, then print exactly: Alice is 15 years old.",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `Alice is 15 years old.`,
           testCases: [`Alice is 15 years old.`]
         }
@@ -183,10 +191,10 @@ She said, "Hello!"
         exercise: {
           description: "Set int qty = 3 and double unitPrice = 12.5, then print Total: 37.5",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `Total: 37.5`,
           testCases: [`Total: 37.5`]
         }
@@ -217,10 +225,10 @@ She said, "Hello!"
         exercise: {
           description: "Create String first = \"Ada\" and last = \"Lovelace\" then print Full name: Ada Lovelace",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `Full name: Ada Lovelace`,
           testCases: [`Full name: Ada Lovelace`]
         }
@@ -248,10 +256,10 @@ She said, "Hello!"
         exercise: {
           description: "Print Sum: 42 using int a=20 and int b=22",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `Sum: 42`,
           testCases: [`Sum: 42`]
         }
@@ -279,10 +287,10 @@ She said, "Hello!"
         exercise: {
           description: "Set double c=25, compute F, print exactly F: 77.0",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `F: 77.0`,
           testCases: [`F: 77.0`]
         }
@@ -295,10 +303,10 @@ She said, "Hello!"
         exercise: {
           description: "Compute average of s1=90, s2=87, s3=95, print exactly: Average: 90.67",
           starterCode: `public class Main {
-    public static void main(String[] args) {
-      // your code here
-    }
-    }`,
+  public static void main(String[] args) {
+    // Your code here
+  }
+}`,
           expectedOutput: `Average: 90.67`,
           testCases: [`Average: 90.67`]
         }

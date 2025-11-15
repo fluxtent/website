@@ -37,44 +37,83 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       javaFiles.push(javaFilePath)
     }
 
-    // Compile all files
-    const compileCommand = `javac ${javaFiles.join(" ")}`
-
-    exec(compileCommand, (compileError, stdout, stderr) => {
-      if (compileError || stderr) {
+    // Check if Java is available first
+    exec("which javac", (checkError) => {
+      if (checkError) {
         // Clean up files
         javaFiles.forEach(filePath => {
           if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath)
           }
-          const classFilePath = filePath.replace(".java", ".class")
-          if (fs.existsSync(classFilePath)) {
-            fs.unlinkSync(classFilePath)
-          }
         })
-        return res.status(200).json({ output: `Compilation Error:\n${stderr}` })
+        return res.status(200).json({ 
+          output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
+        })
       }
 
-      // Run the main class
-      const runCommand = `java -cp ${tmpDir} ${mainClass}`
+      // Compile all files
+      const compileCommand = `javac ${javaFiles.join(" ")}`
 
-      exec(runCommand, (runError, runStdout, runStderr) => {
-        // Clean up files
-        javaFiles.forEach(filePath => {
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath)
+      exec(compileCommand, (compileError, stdout, stderr) => {
+        if (compileError || stderr) {
+          // Check if it's a Java not found error
+          const errorMsg = stderr || compileError?.message || ""
+          if (errorMsg.includes("Unable to locate a Java Runtime") || errorMsg.includes("java: command not found") || errorMsg.includes("javac: command not found")) {
+            // Clean up files
+            javaFiles.forEach(filePath => {
+              if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath)
+              }
+              const classFilePath = filePath.replace(".java", ".class")
+              if (fs.existsSync(classFilePath)) {
+                fs.unlinkSync(classFilePath)
+              }
+            })
+            return res.status(200).json({ 
+              output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
+            })
           }
-          const classFilePath = filePath.replace(".java", ".class")
-          if (fs.existsSync(classFilePath)) {
-            fs.unlinkSync(classFilePath)
-          }
-        })
-
-        if (runError || runStderr) {
-          return res.status(200).json({ output: `Runtime Error:\n${runStderr}` })
+          
+          // Clean up files
+          javaFiles.forEach(filePath => {
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath)
+            }
+            const classFilePath = filePath.replace(".java", ".class")
+            if (fs.existsSync(classFilePath)) {
+              fs.unlinkSync(classFilePath)
+            }
+          })
+          return res.status(200).json({ output: `Compilation Error:\n${stderr}` })
         }
 
-        res.status(200).json({ output: runStdout })
+        // Run the main class
+        const runCommand = `java -cp ${tmpDir} ${mainClass}`
+
+        exec(runCommand, (runError, runStdout, runStderr) => {
+          // Clean up files
+          javaFiles.forEach(filePath => {
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath)
+            }
+            const classFilePath = filePath.replace(".java", ".class")
+            if (fs.existsSync(classFilePath)) {
+              fs.unlinkSync(classFilePath)
+            }
+          })
+
+          if (runError || runStderr) {
+            const errorMsg = runStderr || runError?.message || ""
+            if (errorMsg.includes("Unable to locate a Java Runtime") || errorMsg.includes("java: command not found")) {
+              return res.status(200).json({ 
+                output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
+              })
+            }
+            return res.status(200).json({ output: `Runtime Error:\n${runStderr}` })
+          }
+
+          res.status(200).json({ output: runStdout })
+        })
       })
     })
   } catch (error) {
