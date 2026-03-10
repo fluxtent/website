@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="BioLoop MicroHub is a modular circular infrastructure system combining vertical farming, waste-to-energy biochar production, and local manufacturing to build carbon-negative communities." />
+  <meta name="keywords"
+    content="circular economy, vertical farming, biochar, sustainable infrastructure, modular green factory, carbon negative" />
+  <meta property="og:title" content="BioLoop MicroHub | Circular Infrastructure of the Future" />
+  <meta property="og:description"
+    content="Grow food, convert waste to energy, manufacture sustainably—all in one modular closed-loop system." />
+  <title>BioLoop MicroHub | Circular Infrastructure of the Future</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header id="site-header">
+    <nav class="nav-container">
+      <a href="#home" class="nav-logo">
+        <img src="images/logo_fixed.png" alt="BioLoop MicroHub logo" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#technology">Technology</a></li>
+        <li><a href="#flow">System Flow</a></li>
+        <li><a href="#impact">Impact</a></li>
+        <li><a href="#markets">Use Cases</a></li>
+        <li><a href="#invest">Invest</a></li>
+        <li><a href="#contact" class="nav-cta">Partner With Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="hero-bg-image"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-particles" id="hero-particles"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Modular Circular Infrastructure
+      </div>
+      <h1 class="hero-headline">
+        Building the<br />
+        <span class="gradient-text">Circular Infrastructure</span><br />
+        of the Future
+      </h1>
+      <p class="hero-sub">
+        Grow fresh food. Convert waste into energy. Manufacture sustainably.<br class="hero-br" />
+        One modular system. One closed loop. Infinite impact.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary" id="hero-cta-primary">Partner With Us</a>
+        <a href="#flow" class="btn-ghost" id="hero-cta-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <polygon points="10,8 16,12 10,16" fill="currentColor" />
+          </svg>
+          See How It Works
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num">90%</span>
+          <span class="hero-stat-label">Less Water</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">Carbon⁻</span>
+          <span class="hero-stat-label">Negative</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num">4 in 1</span>
+          <span class="hero-stat-label">Modules</span>
+        </div>
+      </div>
+    </div>
+    <a href="#about" class="scroll-indicator" aria-label="Scroll down">
+      <div class="scroll-arrow"></div>
+    </a>
+  </section>
+
+  <section id="about" class="section-full">
+    <div class="section-inner">
+      <div class="section-label">What We Build</div>
+      <h2 class="section-title">A Self-Sustaining Loop <br /><span class="gradient-text">Powering Communities</span>
+      </h2>
+      <p class="section-intro">
+        BioLoop MicroHub is the world's first modular circular infrastructure platform—built from
+        standard shipping containers, designed to grow food, convert waste, manufacture goods,
+        and train the next generation of green workers in one self-sustaining ecosystem.
+      </p>
+      <div class="about-grid">
+        <div class="about-card reveal">
+          <div class="about-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="22" stroke="url(#aig1)" stroke-width="2" />
+              <path d="M24 14 C30 14 34 18 34 24 C34 30 30 34 24 34 C18 34 14 30 14 24 C14 18 18 14 24 14Z"
+                stroke="url(#aig1)" stroke-width="2" />
+              <path d="M24 19 L24 29 M19 24 L29 24" stroke="url(#aig1)" stroke-width="2" stroke-linecap="round" />
+              <defs>
+                <linearGradient id="aig1" x1="0" y1="0" x2="48" y2="48">
+                  <stop stop-color="#0ea5e9" />
+                  <stop offset="1" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h3>Circular Ecosystem</h3>
+          <p>Food production feeds waste streams. Waste streams generate energy and biochar. Biochar powers
+            manufacturing. Every output becomes a new input—nothing wasted, everything valued.</p>
+        </div>
+        <div class="about-card reveal">
+          <div class="about-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M12 36 L24 12 L36 36 Z" stroke="url(#aig2)" stroke-width="2" stroke-linejoin="round" />
+              <circle cx="24" cy="24" r="4" fill="url(#aig2)" />
+              <defs>
+                <linearGradient id="aig2" x1="0" y1="0" x2="48" y2="48">
+                  <stop stop-color="#0ea5e9" />
+                  <stop offset="1" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h3>Sustainable by Design</h3>
+          <p>Net-negative carbon from day one. Hydroponics slashes water use by 90%. Biochar sequesters CO₂ for
+            centuries. Renewable syngas powers all operations. Designed to give back more than it takes.</p>
+        </div>
+        <div class="about-card reveal">
+          <div class="about-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="20" width="14" height="20" rx="2" stroke="url(#aig3)" stroke-width="2" />
+              <rect x="26" y="12" width="14" height="28" rx="2" stroke="url(#aig3)" stroke-width="2" />
+              <path d="M8 16 L22 8" stroke="url(#aig3)" stroke-width="2" stroke-linecap="round" />
+              <defs>
+                <linearGradient id="aig3" x1="0" y1="0" x2="48" y2="48">
+                  <stop stop-color="#0ea5e9" />
+                  <stop offset="1" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h3>Modular & Scalable</h3>
+          <p>Two 20-ft containers. Infinitely replicable. Deploy behind a grocery store, on a school campus, at a
+            transfer station, or across an entire industrial park. Scale with demand, not capital.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technology" class="section-full section-dark">
+    <div class="section-inner">
+      <div class="section-label">Core Modules</div>
+      <h2 class="section-title">Four Modules.<br /><span class="gradient-text">One Unified System.</span></h2>
+      <p class="section-intro light">
+        Each BioLoop MicroHub integrates four purpose-built modules that work together seamlessly.
+        Click any module to explore the technology.
+      </p>
+      <div class="modules-grid">
+        <div class="module-card reveal" id="module-1">
+          <div class="module-img-wrap">
+            <img src="images/hydroponic.jpg" alt="Vertical Farming Module" loading="lazy" />
+            <div class="module-img-overlay">
+              <span class="module-tag">Module 01</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="module-icon-sm">🌿</div>
+            <h3>Vertical Farming Module</h3>
+            <p>Year-round hydroponic production of microgreens, herbs, and leafy vegetables using LED lighting and
+              recirculated nutrients.</p>
+            <button class="module-expand-btn" aria-expanded="false" data-target="module-detail-1">Explore Module
+              ↓</button>
+          </div>
+          <div class="module-detail" id="module-detail-1">
+            <div class="module-detail-inner">
+              <div class="module-detail-stat"><strong>90%</strong> less water than soil farming</div>
+              <div class="module-detail-stat"><strong>365</strong> days/year production</div>
+              <div class="module-detail-stat"><strong>Zero</strong> pesticides or herbicides</div>
+              <ul class="module-benefits">
+                <li>Full-spectrum LED grow lights tuned to plant biology</li>
+                <li>Nutrient film technique (NFT) hydroponic rails</li>
+                <li>Climate-controlled environment for any geography</li>
+                <li>Produce delivered directly to local kitchens and markets</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="module-card reveal" id="module-2">
+          <div class="module-img-wrap">
+            <img src="images/biochar_module.png" alt="Biochar Energy Module" loading="lazy" />
+            <div class="module-img-overlay">
+              <span class="module-tag">Module 02</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="module-icon-sm">⚡</div>
+            <h3>Biochar & Energy Module</h3>
+            <p>A compact biomass gasification reactor converts agricultural residues and food waste into clean syngas
+              and stable biochar.</p>
+            <button class="module-expand-btn" aria-expanded="false" data-target="module-detail-2">Explore Module
+              ↓</button>
+          </div>
+          <div class="module-detail" id="module-detail-2">
+            <div class="module-detail-inner">
+              <div class="module-detail-stat"><strong>Carbon–</strong> negative process</div>
+              <div class="module-detail-stat"><strong>Syngas</strong> powers all modules</div>
+              <div class="module-detail-stat"><strong>Centuries</strong> of CO₂ sequestration</div>
+              <ul class="module-benefits">
+                <li>Pyrolytic gasification at high efficiency</li>
+                <li>Syngas produces heat and electricity for on-site use</li>
+                <li>Biochar qualifies for carbon-removal credits</li>
+                <li>Diverts organic waste from landfills and methane generation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="module-card reveal" id="module-3">
+          <div class="module-img-wrap">
+            <img src="images/microfactory_module.png" alt="Micro-Factory Module" loading="lazy" />
+            <div class="module-img-overlay">
+              <span class="module-tag">Module 03</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="module-icon-sm">🏭</div>
+            <h3>Micro-Factory Module</h3>
+            <p>A small-scale fabrication area turns biochar into high-value sustainable products—planters, building
+              blocks, packaging, and more.</p>
+            <button class="module-expand-btn" aria-expanded="false" data-target="module-detail-3">Explore Module
+              ↓</button>
+          </div>
+          <div class="module-detail" id="module-detail-3">
+            <div class="module-detail-inner">
+              <div class="module-detail-stat"><strong>$1.37</strong> local economic multiplier</div>
+              <div class="module-detail-stat"><strong>New</strong> revenue streams</div>
+              <div class="module-detail-stat"><strong>Biochar</strong> as raw material</div>
+              <ul class="module-benefits">
+                <li>CNC fabrication, casting, and compression molding</li>
+                <li>Biochar planters, pavers, and soil amendment products</li>
+                <li>Custom product lines tailored to local markets</li>
+                <li>Captures manufacturing value locally instead of exporting it</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="module-card reveal" id="module-4">
+          <div class="module-img-wrap">
+            <img src="images/training_module.png" alt="Workforce Training Module" loading="lazy" />
+            <div class="module-img-overlay">
+              <span class="module-tag">Module 04</span>
+            </div>
+          </div>
+          <div class="module-body">
+            <div class="module-icon-sm">🎓</div>
+            <h3>Workforce Training Module</h3>
+            <p>Partnering with schools and vocational programs to provide hands-on training in sustainable farming,
+              bioenergy, and fabrication.</p>
+            <button class="module-expand-btn" aria-expanded="false" data-target="module-detail-4">Explore Module
+              ↓</button>
+          </div>
+          <div class="module-detail" id="module-detail-4">
+            <div class="module-detail-inner">
+              <div class="module-detail-stat"><strong>Green</strong> career pathways</div>
+              <div class="module-detail-stat"><strong>STEM</strong> curriculum integration</div>
+              <div class="module-detail-stat"><strong>Rural</strong> and underserved focus</div>
+              <ul class="module-benefits">
+                <li>Certified courses in hydroponic farming and bioenergy</li>
+                <li>Fabrication and manufacturing skills training</li>
+                <li>Partnerships with K-12 schools, community colleges</li>
+                <li>Apprenticeship pathways into green infrastructure jobs</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" class="section-full">
+    <div class="section-inner">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">The <span class="gradient-text">Circular System Flow</span></h2>
+      <p class="section-intro">Every output becomes an input. Nothing leaves the loop wasted.</p>
+      <div class="flow-diagram">
+        <div class="flow-node reveal" data-delay="0">
+          <div class="flow-node-icon">🌱</div>
+          <div class="flow-node-title">Food Production</div>
+          <div class="flow-node-sub">Vertical farm grows fresh local produce year-round</div>
+        </div>
+        <div class="flow-arrow reveal" data-delay="100">
+          <div class="flow-arrow-line"></div>
+          <div class="flow-arrow-label">Organic residues</div>
+        </div>
+        <div class="flow-node reveal" data-delay="200">
+          <div class="flow-node-icon">♻️</div>
+          <div class="flow-node-title">Organic Waste</div>
+          <div class="flow-node-sub">Food scraps & crop residues collected and sorted</div>
+        </div>
+        <div class="flow-arrow reveal" data-delay="300">
+          <div class="flow-arrow-line"></div>
+          <div class="flow-arrow-label">Feed to reactor</div>
+        </div>
+        <div class="flow-node reveal" data-delay="400">
+          <div class="flow-node-icon">🔥</div>
+          <div class="flow-node-title">Biochar Reactor</div>
+          <div class="flow-node-sub">Pyrolysis converts waste into syngas & stable biochar</div>
+        </div>
+        <div class="flow-arrow reveal" data-delay="500">
+          <div class="flow-arrow-line"></div>
+          <div class="flow-arrow-label">Power & material</div>
+        </div>
+        <div class="flow-node reveal" data-delay="600">
+          <div class="flow-node-icon">⚡</div>
+          <div class="flow-node-title">Energy Generation</div>
+          <div class="flow-node-sub">Syngas generates heat & electricity for all modules</div>
+        </div>
+        <div class="flow-arrow reveal" data-delay="700">
+          <div class="flow-arrow-line"></div>
+          <div class="flow-arrow-label">Biochar raw material</div>
+        </div>
+        <div class="flow-node reveal" data-delay="800">
+          <div class="flow-node-icon">🏭</div>
+          <div class="flow-node-title">Manufacturing</div>
+          <div class="flow-node-sub">Biochar transformed into high-value sustainable products</div>
+        </div>
+        <div class="flow-arrow reveal" data-delay="900">
+          <div class="flow-arrow-line"></div>
+          <div class="flow-arrow-label">Jobs & products</div>
+        </div>
+        <div class="flow-node reveal flow-node-highlight" data-delay="1000">
+          <div class="flow-node-icon">🏘️</div>
+          <div class="flow-node-title">Community</div>
+          <div class="flow-node-sub">Food, energy, jobs, and carbon credits returned locally</div>
+        </div>
+      </div>
+      <div class="flow-return-arrow reveal">
+        <div class="flow-return-line"></div>
+        <span class="flow-return-label">Loop restarts → Carbon-negative cycle</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="deck" class="section-full section-dark scroll-deck">
+    <div class="section-inner">
+      <div class="section-label">Information Deck</div>
+      <h2 class="section-title">The <span class="gradient-text">BioLoop</span> Journey</h2>
+      <p class="section-intro light">Scroll to follow the path of a single cycle—from growth, to waste, to renewable
+        energy.</p>
+
+      <div class="walk-container" id="walk-container">
+        <svg class="walk-svg" id="walk-svg">
+          <defs>
+            <linearGradient id="walk-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0ea5e9" />
+              <stop offset="50%" stop-color="#10b981" />
+            </linearGradient>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <path class="walk-path-bg" id="scroll-path-bg" d=""></path>
+          <path class="walk-path-fill" id="scroll-path" d="" filter="url(#glow)"></path>
+        </svg>
+
+        <div class="walk-item">
+          <div class="walk-text reveal">
+            <div class="walk-step-stamp">Phase 01</div>
+            <h3>The Seed</h3>
+            <p>It starts in the vertical farm. Seeds are planted in hydroponic beds, using precision LED lighting to
+              maximize growth while cutting water usage by 90%.</p>
+          </div>
+          <div class="walk-marker-wrap">
+            <div class="walk-marker">🌱</div>
+          </div>
+          <div class="walk-spacer"></div>
+        </div>
+
+        <div class="walk-item">
+          <div class="walk-spacer"></div>
+          <div class="walk-marker-wrap">
+            <div class="walk-marker">🍽️</div>
+          </div>
+          <div class="walk-text reveal">
+            <div class="walk-step-stamp">Phase 02</div>
+            <h3>Local Harvest</h3>
+            <p>Fresh greens are harvested at peak nutrition. Because the MicroHub is built locally, food miles are zero,
+              ensuring maximum freshness.</p>
+          </div>
+        </div>
+
+        <div class="walk-item">
+          <div class="walk-text reveal">
+            <div class="walk-step-stamp">Phase 03</div>
+            <h3>Organic Recovery</h3>
+            <p>Post-consumer food waste is gathered. Instead of ending up in methane-producing landfills, it is loaded
+              into the BioLoop module.</p>
+          </div>
+          <div class="walk-marker-wrap">
+            <div class="walk-marker">♻️</div>
+          </div>
+          <div class="walk-spacer"></div>
+        </div>
+
+        <div class="walk-item">
+          <div class="walk-spacer"></div>
+          <div class="walk-marker-wrap">
+            <div class="walk-marker">🔥</div>
+          </div>
+          <div class="walk-text reveal">
+            <div class="walk-step-stamp">Phase 04</div>
+            <h3>Pyrolysis Reactor</h3>
+            <p>Inside the high-heat reactor, organics break down into clean combustible syngas to power the farm, and
+              solid carbon biochar.</p>
+          </div>
+        </div>
+
+        <div class="walk-item">
+          <div class="walk-text reveal">
+            <div class="walk-step-stamp">Phase 05</div>
+            <h3>Sustainable Manufacturing</h3>
+            <p>The resulting biochar is sequestered or fed into the Micro-Factory to manufacture high-value
+              carbon-negative products locally.</p>
+          </div>
+          <div class="walk-marker-wrap">
+            <div class="walk-marker">🏭</div>
+          </div>
+          <div class="walk-spacer"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="impact" class="section-full section-tinted">
+    <div class="section-inner">
+      <div class="section-label">Measurable Results</div>
+      <h2 class="section-title">Impact That <span class="gradient-text">Compounds</span></h2>
+      <p class="section-intro">Real, verifiable numbers—not aspirations. Every MicroHub delivers measurable
+        environmental, social, and economic returns.</p>
+      <div class="metrics-grid">
+        <div class="metric-card reveal">
+          <div class="metric-number" data-target="90" data-suffix="%">0%</div>
+          <div class="metric-title">Less Water</div>
+          <div class="metric-desc">Compared to conventional soil-based agriculture through precision hydroponics</div>
+        </div>
+        <div class="metric-card reveal">
+          <div class="metric-number carbon-neg">Carbon⁻</div>
+          <div class="metric-title">Net Negative</div>
+          <div class="metric-desc">Every MicroHub sequesters more carbon than it produces through biochar production
+          </div>
+        </div>
+        <div class="metric-card reveal">
+          <div class="metric-number" data-target="100" data-suffix="%">0%</div>
+          <div class="metric-title">Waste Diverted</div>
+          <div class="metric-desc">Organic waste redirected from landfills and converted to energy and biochar</div>
+        </div>
+        <div class="metric-card reveal">
+          <div class="metric-number" data-target="25" data-suffix="+">0+</div>
+          <div class="metric-title">Local Jobs Created</div>
+          <div class="metric-desc">Per MicroHub installation in farming, manufacturing, and energy operations</div>
+        </div>
+        <div class="metric-card reveal">
+          <div class="metric-number" data-target="365" data-suffix=" days">0 days</div>
+          <div class="metric-title">Year-Round Production</div>
+          <div class="metric-desc">Climate-controlled vertical farming operates regardless of season or weather</div>
+        </div>
+        <div class="metric-card reveal">
+          <div class="metric-number" data-target="1.37" data-suffix="x" data-decimals="2">0x</div>
+          <div class="metric-title">Economic Multiplier</div>
+          <div class="metric-desc">Every dollar of local manufacturing adds $1.37 to the surrounding economy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="markets" class="section-full">
+    <div class="section-inner">
+      <div class="section-label">Where BioLoop Works</div>
+      <h2 class="section-title">Built for <span class="gradient-text">Every Community</span></h2>
+      <p class="section-intro">BioLoop MicroHub is a flexible platform. Whether you serve thousands or millions, the
+        system scales and adapts to your context.</p>
+      <div class="usecases-grid">
+        <div class="usecase-card reveal" id="uc-municipalities">
+          <div class="usecase-icon">🏛️</div>
+          <h3>Municipalities</h3>
+          <p>Reduce waste-management costs, produce local food, and create green jobs. A MicroHub at a transfer station
+            becomes a visible symbol of circular infrastructure and environmental leadership.</p>
+          <div class="usecase-tag">Best for: Towns &amp; Counties</div>
+        </div>
+        <div class="usecase-card reveal" id="uc-schools">
+          <div class="usecase-icon">🏫</div>
+          <h3>Schools &amp; Universities</h3>
+          <p>Integrate BioLoop into STEM curricula, turn cafeteria waste into energy, and supply student kitchens with
+            ultra-fresh local greens. Students learn sustainability hands-on.</p>
+          <div class="usecase-tag">Best for: K-12 &amp; Higher Ed</div>
+        </div>
+        <div class="usecase-card reveal" id="uc-grocery">
+          <div class="usecase-icon">🛒</div>
+          <h3>Grocery Chains</h3>
+          <p>Slash spoilage, cut hauling fees, and differentiate with house-grown produce. Food hubs can aggregate
+            residues from multiple stores and deliver compost, biochar, or energy back.</p>
+          <div class="usecase-tag">Best for: Independent Retailers</div>
+        </div>
+        <div class="usecase-card reveal" id="uc-industrial">
+          <div class="usecase-icon">🏗️</div>
+          <h3>Industrial Parks</h3>
+          <p>Manage biomass waste on site, power facilities with renewable heat, and create sustainable products.
+            Demonstrate ESG leadership with measurable, verifiable metrics.</p>
+          <div class="usecase-tag">Best for: Campuses &amp; Parks</div>
+        </div>
+        <div class="usecase-card reveal" id="uc-food-dist">
+          <div class="usecase-icon">🚚</div>
+          <h3>Food Distribution Centers</h3>
+          <p>Convert distribution waste into on-site energy and locally manufactured products. Reduce cold-chain
+            dependence and shorten food miles at scale.</p>
+          <div class="usecase-tag">Best for: Regional Distributors</div>
+        </div>
+        <div class="usecase-card reveal" id="uc-housing">
+          <div class="usecase-icon">🏘️</div>
+          <h3>Residential Developments</h3>
+          <p>Build zero-waste communities from the ground up. Integrated MicroHubs provide fresh food, renewable energy,
+            and sustainable products to residents as part of the development.</p>
+          <div class="usecase-tag">Best for: Planned Communities</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="invest" class="section-full section-dark">
+    <div class="section-inner">
+      <div class="section-label">Investment Opportunity</div>
+      <h2 class="section-title">A Once-in-a-Generation <br /><span class="gradient-text">Infrastructure Shift</span>
+      </h2>
+      <p class="section-intro light">
+        The global circular economy market is projected to reach $4.5 trillion by 2030. BioLoop MicroHub is positioned
+        at the intersection of food security, clean energy, and sustainable manufacturing—three of the most
+        capital-intensive challenges of our era.
+      </p>
+      <div class="invest-grid">
+        <div class="invest-card reveal">
+          <div class="invest-icon">📈</div>
+          <h3>Market Opportunity</h3>
+          <ul>
+            <li>$4.5T global circular economy market by 2030</li>
+            <li>$800B vertical farming &amp; controlled agriculture addressable market</li>
+            <li>$210B biochar and carbon credit markets by 2035</li>
+            <li>Massive unmet demand for localized food infrastructure</li>
+          </ul>
+        </div>
+        <div class="invest-card reveal">
+          <div class="invest-icon">🔩</div>
+          <h3>Modular Scalability</h3>
+          <ul>
+            <li>Standardized container-based units enable rapid replication</li>
+            <li>Factory-built modules reduce on-site installation complexity</li>
+            <li>Each unit generates multiple revenue streams simultaneously</li>
+            <li>Network effects compound as deployments scale</li>
+          </ul>
+        </div>
+        <div class="invest-card reveal">
+          <div class="invest-icon">💰</div>
+          <h3>Revenue Streams</h3>
+          <ul>
+            <li>Produce sales to local retailers and institutions</li>
+            <li>Biochar product manufacturing and sales</li>
+            <li>Carbon credit and offset monetization</li>
+            <li>Training program licensing and partnerships</li>
+          </ul>
+        </div>
+        <div class="invest-card reveal">
+          <div class="invest-icon">🌍</div>
+          <h3>Sustainability Demand</h3>
+          <ul>
+            <li>ESG mandates driving institutional infrastructure investment</li>
+            <li>Municipal sustainability goals creating procurement demand</li>
+            <li>Federal and state grant programs for circular economy</li>
+            <li>Carbon market growth accelerating ROI timelines</li>
+          </ul>
+        </div>
+      </div>
+      <div class="invest-cta-row reveal">
+        <a href="#contact" class="btn-primary" id="pitch-deck-btn">Download Pitch Deck</a>
+        <a href="#contact" class="btn-outline" id="founder-contact-btn">Contact the Founder</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section-full">
+    <div class="section-inner">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title">Ready to Build the <br /><span class="gradient-text">Future Together?</span></h2>
+      <p class="section-intro">Whether you're a municipality, investor, school, or sustainability partner—let's talk
+        about bringing BioLoop MicroHub to your community.</p>
+      <div class="contact-wrapper">
+        <div class="contact-info reveal">
+          <h3>Let's Connect</h3>
+          <div class="contact-detail">
+            <span class="contact-detail-icon">✉️</span>
+            <a href="mailto:info@bioloophub.com">info@bioloophub.com</a>
+          </div>
+          <div class="contact-detail">
+            <span class="contact-detail-icon">📞</span>
+            <span>(123) 456-7890</span>
+          </div>
+          <div class="contact-detail">
+            <span class="contact-detail-icon">📍</span>
+            <span>Frisco, Texas, USA</span>
+          </div>
+          <div class="contact-tags">
+            <span class="contact-tag">Investors</span>
+            <span class="contact-tag">Municipalities</span>
+            <span class="contact-tag">Schools</span>
+            <span class="contact-tag">Sustainability Partners</span>
+          </div>
+          <a href="#contact" class="btn-schedule" id="schedule-call-btn">
+            <span>📅</span> Schedule a Call
+          </a>
+        </div>
+        <div class="contact-form-wrap reveal">
+          <form class="contact-form" id="contact-form" novalidate>
+            <div class="form-group">
+              <label for="contact-name">Full Name</label>
+              <input type="text" id="contact-name" name="name" placeholder="Your full name" required
+                autocomplete="name" />
+              <span class="form-error" id="error-name"></span>
+            </div>
+            <div class="form-group">
+              <label for="contact-org">Organization</label>
+              <input type="text" id="contact-org" name="organization" placeholder="Company, school, or municipality"
+                autocomplete="organization" />
+            </div>
+            <div class="form-group">
+              <label for="contact-email">Email Address</label>
+              <input type="email" id="contact-email" name="email" placeholder="you@organization.com" required
+                autocomplete="email" />
+              <span class="form-error" id="error-email"></span>
+            </div>
+            <div class="form-group">
+              <label for="contact-message">How Can We Help?</label>
+              <textarea id="contact-message" name="message" rows="5"
+                placeholder="Describe your project, community, or investment interest..." required></textarea>
+              <span class="form-error" id="error-message"></span>
+            </div>
+            <button type="submit" class="btn-primary btn-submit" id="contact-submit">Send Message →</button>
+            <div class="form-success" id="form-success">
+              <span>✅</span> Thank you! We'll be in touch within 24 hours.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="images/logo_fixed.png" alt="BioLoop MicroHub logo" class="footer-logo-img" />
+      </div>
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#technology">Technology</a>
+        <a href="#flow">System Flow</a>
+        <a href="#impact">Impact</a>
+        <a href="#markets">Use Cases</a>
+        <a href="#invest">Invest</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p class="footer-copy">© <span id="year"></span> BioLoop MicroHub. All rights reserved. Building the circular
+        infrastructure of the future.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active', open);
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const delay = e.target.dataset.delay ? parseInt(e.target.dataset.delay) : 0;
+          setTimeout(() => e.target.classList.add('visible'), delay);
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => revealObs.observe(el));
+
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const decimals = parseInt(el.dataset.decimals) || 0;
+      const duration = 1800;
+      const startTime = performance.now();
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = target * eased;
+        el.textContent = value.toFixed(decimals) + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const metricEls = document.querySelectorAll('.metric-number[data-target]');
+    const metricObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          animateCounter(e.target);
+          metricObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    metricEls.forEach(el => metricObs.observe(el));
+
+    document.querySelectorAll('.module-expand-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const detail = document.getElementById(targetId);
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.module-detail').forEach(d => {
+          d.classList.remove('open');
+        });
+        document.querySelectorAll('.module-expand-btn').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          b.textContent = 'Explore Module ↓';
+        });
+        if (!expanded) {
+          detail.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          btn.textContent = 'Close ↑';
+        }
+      });
+    });
+
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let valid = true;
+      const name = document.getElementById('contact-name');
+      const email = document.getElementById('contact-email');
+      const message = document.getElementById('contact-message');
+      const errName = document.getElementById('error-name');
+      const errEmail = document.getElementById('error-email');
+      const errMsg = document.getElementById('error-message');
+      errName.textContent = '';
+      errEmail.textContent = '';
+      errMsg.textContent = '';
+      if (!name.value.trim()) { errName.textContent = 'Please enter your name.'; valid = false; }
+      if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { errEmail.textContent = 'Please enter a valid email address.'; valid = false; }
+      if (!message.value.trim()) { errMsg.textContent = 'Please enter your message.'; valid = false; }
+      if (valid) {
+        document.getElementById('form-success').classList.add('visible');
+        form.reset();
+        setTimeout(() => document.getElementById('form-success').classList.remove('visible'), 6000);
+      }
+    });
+
+    const particleContainer = document.getElementById('hero-particles');
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.animationDelay = (Math.random() * 8) + 's';
+      p.style.animationDuration = (6 + Math.random() * 10) + 's';
+      p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+      particleContainer.appendChild(p);
+    }
+
+    function drawScrollPath() {
+      const container = document.getElementById('walk-container');
+      const path = document.getElementById('scroll-path');
+      const pathBg = document.getElementById('scroll-path-bg');
+      const markers = document.querySelectorAll('.walk-marker');
+      if (!path || !markers.length) return;
+
+      let d = '';
+      const cRect = container.getBoundingClientRect();
+
+      markers.forEach((marker, i) => {
+        const mRect = marker.getBoundingClientRect();
+        const x = (mRect.left - cRect.left) + mRect.width / 2;
+        const y = (mRect.top - cRect.top) + mRect.height / 2;
+
+        if (i === 0) {
+          d += `M ${x} 0 L ${x} ${y} `;
+        } else {
+          const pRect = markers[i - 1].getBoundingClientRect();
+          const pX = (pRect.left - cRect.left) + pRect.width / 2;
+          const pY = (pRect.top - cRect.top) + pRect.height / 2;
+          d += `C ${pX} ${pY + 100}, ${x} ${y - 100}, ${x} ${y} `;
+        }
+
+        if (i === markers.length - 1) {
+          d += `L ${x} ${cRect.height} `;
+        }
+      });
+
+      path.setAttribute('d', d);
+      pathBg.setAttribute('d', d);
+
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+      path.setAttribute('data-length', length);
+
+      updateScrollPath();
+    }
+
+    function updateScrollPath() {
+      const path = document.getElementById('scroll-path');
+      if (!path) return;
+
+      const length = parseFloat(path.getAttribute('data-length'));
+      if (isNaN(length)) return;
+
+      const container = document.getElementById('walk-container');
+      const cRect = container.getBoundingClientRect();
+
+      const scrollY = window.innerHeight * 0.65 - cRect.top;
+      let pct = scrollY / cRect.height;
+      pct = Math.max(0, Math.min(1, Math.max(0, pct)));
+
+      path.style.strokeDashoffset = length - (length * pct);
+
+      document.querySelectorAll('.walk-marker').forEach(marker => {
+        const mRect = marker.getBoundingClientRect();
+        if (mRect.top < window.innerHeight * 0.65) {
+          marker.classList.add('active');
+        } else {
+          marker.classList.remove('active');
+        }
+      });
+    }
+
+    if (document.getElementById('walk-container')) {
+      window.addEventListener('resize', drawScrollPath);
+      window.addEventListener('scroll', updateScrollPath);
+      setTimeout(drawScrollPath, 150);
+      setTimeout(drawScrollPath, 1500);
+    }
+  </script>
+</body>
+
+</html>
