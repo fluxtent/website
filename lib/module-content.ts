@@ -1,4 +1,6 @@
-export const moduleContent: Record<number, any[]> = {
+import type { ModuleContentMap } from "@/types/course"
+
+export const moduleContent: ModuleContentMap = {
   1: [
     {
       id: '1.1',
@@ -87,7 +89,6 @@ She said, "Hello!"
         description: "Print your name and age on separate lines.",
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: "My name is Alex.\nI am 16.",
@@ -103,7 +104,6 @@ She said, "Hello!"
         description: "Print this exactly: He said, \"Java is cool!\"",
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: `He said, "Java is cool!"`,
@@ -147,14 +147,13 @@ She said, "Hello!"
       },
       {
         id: '2.2',
-        title: 'Practice â€“ Variables',
+        title: 'Practice - Variables',
         type: 'practice',
         content: `Declare variables for a person's name and age, then print: Alice is 15 years old.`,
         exercise: {
           description: "Use String and int variables, then print exactly: Alice is 15 years old.",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `Alice is 15 years old.`,
@@ -171,28 +170,27 @@ She said, "Hello!"
 
     Integer division discards decimals:
     \`\`\`java
-    int a = 7 / 2;      // 3
-    double b = 7 / 2.0; // 3.5
-    int r = 7 % 2;      // 1
+    int a = 7 / 2;
+    double b = 7 / 2.0;
+    int r = 7 % 2;
     \`\`\`
 
 
     The Math class provides useful methods:
     \`\`\`java
-    System.out.println(Math.sqrt(16)); // 4.0
-    System.out.println(Math.pow(2,3)); // 8.0
+    System.out.println(Math.sqrt(16));
+    System.out.println(Math.pow(2,3));
     \`\`\``
       },
       {
         id: '2.4',
-        title: 'Practice â€“ Arithmetic',
+        title: 'Practice - Arithmetic',
         type: 'practice',
         content: `Compute total price given qty and unitPrice. Print exactly: Total: 37.5`,
         exercise: {
           description: "Set int qty = 3 and double unitPrice = 12.5, then print Total: 37.5",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `Total: 37.5`,
@@ -219,14 +217,13 @@ She said, "Hello!"
       },
       {
         id: '2.6',
-        title: 'Practice â€“ Strings',
+        title: 'Practice - Strings',
         type: 'practice',
         content: `Combine first and last name with a space. Print exactly: Full name: Ada Lovelace`,
         exercise: {
           description: "Create String first = \"Ada\" and last = \"Lovelace\" then print Full name: Ada Lovelace",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `Full name: Ada Lovelace`,
@@ -250,14 +247,13 @@ She said, "Hello!"
       },
       {
         id: '2.8',
-        title: 'Practice â€“ Scanner Simulation',
+        title: 'Practice - Scanner Simulation',
         type: 'practice',
         content: `Hardcode two integers a=20 and b=22, then print: Sum: 42`,
         exercise: {
           description: "Print Sum: 42 using int a=20 and int b=22",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `Sum: 42`,
@@ -281,14 +277,13 @@ She said, "Hello!"
       },
       {
         id: '2.10',
-        title: 'Practice â€“ Temperature Conversion',
+        title: 'Practice - Temperature Conversion',
         type: 'practice',
         content: `Convert Celsius to Fahrenheit using F = C * 9/5 + 32. For C=25, print: F: 77.0`,
         exercise: {
           description: "Set double c=25, compute F, print exactly F: 77.0",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `F: 77.0`,
@@ -297,14 +292,13 @@ She said, "Hello!"
       },
       {
         id: '2.11',
-        title: 'Mini Assignment â€“ Grade Calculator',
+        title: 'Mini Assignment - Grade Calculator',
         type: 'practice',
         content: `Write a program with three scores: 90, 87, 95. Print the average with two decimals: Average: 90.67`,
         exercise: {
           description: "Compute average of s1=90, s2=87, s3=95, print exactly: Average: 90.67",
           starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
           expectedOutput: `Average: 90.67`,
@@ -333,10 +327,10 @@ Boolean expressions evaluate to true or false. They use relational operators and
 \`\`\`java
 int x = 5;
 int y = 10;
-boolean b1 = (x < y);       // true
-boolean b2 = (x == y);      // false
-boolean b3 = (x < y) && (y < 20); // true
-boolean b4 = !(x > y);      // true
+boolean b1 = (x < y);
+boolean b2 = (x == y);
+boolean b3 = (x < y) && (y < 20);
+boolean b4 = !(x > y);
 \`\`\`
 
 Boolean expressions control the flow of programs when used in if statements and loops.
@@ -392,7 +386,6 @@ In this example, only one of the three messages will be printed based on the tem
           'Set int a=8 and int b=5; if a is greater than b, print Larger: a, else print Larger: b',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Larger: 8',
@@ -408,7 +401,6 @@ In this example, only one of the three messages will be printed based on the tem
         description: "Given int score=73; determine and print the letter grade using if/else-if statements; print Grade: C",
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: `Grade: C`,
@@ -480,7 +472,6 @@ This code uses an outer loop over \`i\` and an inner loop over \`j\`. The inner 
         description: 'Print the numbers 1 through 5 using a for loop.',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: '1\n2\n3\n4\n5',
@@ -497,7 +488,6 @@ This code uses an outer loop over \`i\` and an inner loop over \`j\`. The inner 
           'Compute the sum of the integers from 1 to 10 using a while loop and print: Sum: 55',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Sum: 55',
@@ -514,7 +504,6 @@ This code uses an outer loop over \`i\` and an inner loop over \`j\`. The inner 
           'Compute the factorial of 5 (1×2×3×4×5) using a loop and print exactly: Factorial: 120',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Factorial: 120',
@@ -531,7 +520,6 @@ This code uses an outer loop over \`i\` and an inner loop over \`j\`. The inner 
           'Print a multiplication table for 1 through 3 using nested loops. The output should be exactly:\n1 2 3\n2 4 6\n3 6 9',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: '1 2 3\n2 4 6\n3 6 9',
@@ -585,7 +573,6 @@ public static void sayHello(String name) {
   System.out.println("Hello, " + name + "!");
 }
 
-// value-returning method
 public static int square(int n) {
   return n * n;
 }
@@ -603,9 +590,7 @@ Call value-returning methods in expressions or store their results in variables;
         description:
           'Define a method greet(String name) that prints Hello, NAME! exactly. In main, call greet("Ada") and produce Hello, Ada!',
         starterCode: `public class Main {
-  // define your method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Hello, Ada!',
@@ -621,9 +606,7 @@ Call value-returning methods in expressions or store their results in variables;
         description:
           'Create a method max(int x, int y) that returns the larger value. In main, call max(8,3) and print Max: 8',
         starterCode: `public class Main {
-  // define your method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Max: 8',
@@ -658,13 +641,13 @@ Fields (instance variables) store the state of an object. Methods define behavio
 Example:
 \`\`\`java
 public class Counter {
-  private int count;        // field
+  private int count;
 
-  public void increment() { // method
+  public void increment() {
     count++;
   }
 
-  public int getCount() {   // accessor method
+  public int getCount() {
     return count;
   }
 }
@@ -723,11 +706,9 @@ public class Point {
         description:
           "Create a Person class with a name field, constructor, and greet method. In main, create Person('Ada') and call greet() to print Hello, my name is Ada!",
         starterCode: `class Person {
-  // Your code here
 }
 public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Hello, my name is Ada!',
@@ -743,11 +724,9 @@ public class Main {
         description:
           'Define class BankAccount with balance, constructor, deposit(), and getBalance(). In main, call deposit and print updated balance.',
         starterCode: `class BankAccount {
-  // Your code here
 }
 public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Balance: 150.0',
@@ -763,11 +742,9 @@ public class Main {
         description:
           "Implement Student class with name and gpa, method isHonorRoll() returns boolean. In main, instantiate Student('Bob',3.8) and print Honor roll: true",
         starterCode: `class Student {
-  // Your code here
 }
 public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Honor roll: true',
@@ -819,7 +796,6 @@ for (int num : arr) {
           'Create an int[] arr = {1,2,3,4,5}; sum all elements and print Sum: 15',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Sum: 15',
@@ -836,7 +812,6 @@ for (int num : arr) {
           'Create an int[] arr = {3,1,4,2,5}; find the maximum value and print Max: 5',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Max: 5',
@@ -852,11 +827,11 @@ for (int num : arr) {
 When you create an array, each element is automatically initialized. Numeric arrays default to 0, boolean arrays to false, and object references to null. You can initialize an array at declaration or assign values later.
 
 \`\`\`java
-int[] nums = new int[3];     // {0, 0, 0}
-boolean[] flags = new boolean[2]; // {false, false}
-String[] words = new String[2];   // {null, null}
+int[] nums = new int[3];
+boolean[] flags = new boolean[2];
+String[] words = new String[2];
 
-int[] primes = {2,3,5,7};   // initialize with values
+int[] primes = {2,3,5,7};
 \`\`\`
 `,
     },
@@ -870,7 +845,6 @@ int[] primes = {2,3,5,7};   // initialize with values
           'Create int[] arr = {1,2,3,4,5}; print the elements in reverse order with spaces',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: '5 4 3 2 1',
@@ -887,7 +861,6 @@ int[] primes = {2,3,5,7};   // initialize with values
           'Create int[] arr = {1,2,2,3,2}; count occurrences of 2 and print Count: 3',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Count: 3',
@@ -909,7 +882,7 @@ import java.util.ArrayList;
 ArrayList<String> list = new ArrayList<>();
 list.add("apple");
 list.add("banana");
-System.out.println(list.get(0)); // apple
+System.out.println(list.get(0));
 \`\`\`
 `,
     },
@@ -944,7 +917,6 @@ for (int n : nums) {
         starterCode: `import java.util.ArrayList;
 public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'apple cherry',
@@ -963,8 +935,8 @@ Use arrays when the size is fixed and performance matters; use \`ArrayList\` whe
 
 Example:
 \`\`\`java
-int[] arr = new int[3];              // array of ints
-ArrayList<String> list = new ArrayList<>(); // list of Strings
+int[] arr = new int[3];
+ArrayList<String> list = new ArrayList<>();
 list.add("hi");
 \`\`\`
 `,
@@ -980,7 +952,6 @@ list.add("hi");
         starterCode: `import java.util.ArrayList;
 public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Sum: 12',
@@ -1000,8 +971,8 @@ A 2D array is an array of arrays, useful for representing tables or grids. Acces
 \`\`\`java
 int[][] matrix = new int[2][3];
 matrix[0][0] = 1;
-System.out.println(matrix.length);    // number of rows
-System.out.println(matrix[0].length); // number of columns in row 0
+System.out.println(matrix.length);
+System.out.println(matrix[0].length);
 \`\`\`
 `,
     },
@@ -1032,7 +1003,6 @@ for (int i = 0; i < arr.length; i++) {
           'Create int[][] arr = {{1,2},{3,4}}; sum all elements and print Sum: 10',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Sum: 10',
@@ -1049,7 +1019,6 @@ for (int i = 0; i < arr.length; i++) {
           'Create int[][] arr = {{5,1},{4,9}}; determine the maximum element and print Max: 9',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Max: 9',
@@ -1087,7 +1056,6 @@ After reading values from a file, store them in an array or ArrayList for proces
           'Create an int[] nums = {10,20,30,40,50}; compute the average as a double and print Average: 30.0',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Average: 30.0',
@@ -1133,7 +1101,6 @@ This program reads integers from a file until there are no more numbers.
           'Create int[] data = {3,8,2,9,5}; determine the maximum value and print Max: 9',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Max: 9',
@@ -1169,7 +1136,6 @@ Common sorting algorithms include selection sort, insertion sort, and merge sort
           'Create int[] arr = {3,7,1,9}; use a loop to search for 7. If found, print Found',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Found',
@@ -1186,7 +1152,6 @@ Common sorting algorithms include selection sort, insertion sort, and merge sort
           'Create int[] arr = {5,2,4,1,3}; sort it in ascending order and print 1 2 3 4 5 with spaces',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: '1 2 3 4 5',
@@ -1215,7 +1180,7 @@ public static int binarySearch(int[] arr, int target) {
       right = mid - 1;
     }
   }
-  return -1; // not found
+  return -1;
 }
 \`\`\`
 `,
@@ -1229,9 +1194,7 @@ public static int binarySearch(int[] arr, int target) {
         description:
           'Write a method binarySearch(int[] arr, int target) returning index; call it on {1,3,5,7,9} with target 7 and print Index: 3',
         starterCode: `public class Main {
-  // define binarySearch method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Index: 3',
@@ -1248,7 +1211,6 @@ public static int binarySearch(int[] arr, int target) {
           'Implement selection sort on int[] arr = {9,4,6,2,8}; print the sorted array 2 4 6 8 9',
         starterCode: `public class Main {
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: '2 4 6 8 9',
@@ -1283,9 +1245,7 @@ Common recursive algorithms include factorial, Fibonacci numbers, and divide-and
         description:
           'Implement a recursive method int fact(int n) that returns n factorial. Call fact(5) in main and print Factorial: 120',
         starterCode: `public class Main {
-  // define your recursive method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Factorial: 120',
@@ -1301,9 +1261,7 @@ Common recursive algorithms include factorial, Fibonacci numbers, and divide-and
         description:
           'Implement a recursive method int sum(int n) that returns the sum of numbers 1 through n. Call sum(5) in main and print Sum: 15',
         starterCode: `public class Main {
-  // define your recursive method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Sum: 15',
@@ -1319,9 +1277,7 @@ Common recursive algorithms include factorial, Fibonacci numbers, and divide-and
         description:
           'Write a method int fibonacci(int n) that returns the nth Fibonacci number using recursion. In main, call fibonacci(5) and print Fib: 5',
         starterCode: `public class Main {
-  // define your recursive method here
   public static void main(String[] args) {
-    // Your code here
   }
 }`,
         expectedOutput: 'Fib: 5',

@@ -1,20 +1,20 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { 
-  Play, 
-  RotateCcw, 
-  Plus, 
-  X, 
-  PanelLeft, 
-  PanelRight, 
-  Layout,
-  CheckCircle
+import {
+  Play,
+  RotateCcw,
+  Plus,
+  X,
+  Terminal,
+  CheckCircle,
+  XCircle,
+  FileCode,
+  Loader2,
 } from "lucide-react"
 
 type JavaFile = {
@@ -23,84 +23,59 @@ type JavaFile = {
   content: string
 }
 
-type TabLayout = "horizontal" | "vertical-left" | "vertical-right"
-
 interface CodeEditorProps {
   readOnly?: boolean
   expectedOutput?: string
   testCases?: string[]
   onSuccess?: () => void
   starterCode?: string
+  initialCode?: string
 }
-
-const initialCode = `public class Main {
-    public static void main(String[] args) {
-        Calculator calc = new Calculator();
-        Student student = new Student("Alice", 20);
-        
-        System.out.println("Calculator: " + calc.add(5, 3));
-        System.out.println("Student: " + student.getName() + ", Age: " + student.getAge());
-    }
-}`
 
 export default function CodeEditor({
   readOnly = false,
   expectedOutput,
   testCases = [],
   onSuccess,
-  starterCode
+  starterCode,
+  initialCode,
 }: CodeEditorProps) {
-
-const [files, setFiles] = useState<JavaFile[]>([
-  {
-    id: "1",
-    name: "Main.java",
-    content: starterCode || `public class Main {
+  const defaultCode = starterCode || initialCode || `public class Main {
   public static void main(String[] args) {
     System.out.println("Hello");
   }
-}`,
-  }
-])
+}`
+
+  const [files, setFiles] = useState<JavaFile[]>([
+    { id: "1", name: "Main.java", content: defaultCode },
+  ])
 
   const [activeFileId, setActiveFileId] = useState("1")
   const [output, setOutput] = useState("")
   const [isRunning, setIsRunning] = useState(false)
-  const [testResults, setTestResults] = useState<Array<{ test: string; passed: boolean; output: string }>>([])
   const [allTestsPassed, setAllTestsPassed] = useState(false)
   const [showAddFile, setShowAddFile] = useState(false)
   const [newFileName, setNewFileName] = useState("")
-  const [tabLayout, setTabLayout] = useState<TabLayout>("horizontal")
 
-  const activeFile = files.find(f => f.id === activeFileId)
-  const mainFile = files.find(f => f.name === "Main.java")
+  const activeFile = files.find((f) => f.id === activeFileId)
+  const mainFile = files.find((f) => f.name === "Main.java")
 
   const addFile = () => {
     if (!newFileName.trim()) return
-    
-    const fileName = newFileName.trim().endsWith('.java') 
-      ? newFileName.trim() 
-      : newFileName.trim() + '.java'
-    
-    let initialContent = `public class ${fileName.replace('.java', '')} {
-    // Your code here
-}`
-    
-    // If it's Main.java, add the main method
-    if (fileName === "Main.java") {
-      initialContent = `public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello from Main!");
-    }
-}`
-    }
-    
+    const fileName = newFileName.trim().endsWith(".java")
+      ? newFileName.trim()
+      : newFileName.trim() + ".java"
+
+    const initialContent = fileName === "Main.java"
+      ? `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello from Main!");\n    }\n}`
+      : `public class ${fileName.replace(".java", "")} {\n\n}`
+
     const newFile: JavaFile = {
       id: Date.now().toString(),
       name: fileName,
       content: initialContent,
     }
-    
+
     setFiles([...files, newFile])
     setActiveFileId(newFile.id)
     setNewFileName("")
@@ -108,26 +83,20 @@ const [files, setFiles] = useState<JavaFile[]>([
   }
 
   const removeFile = (fileId: string) => {
-    if (files.length <= 1) return // Don't remove the last file
-    
-    const newFiles = files.filter(f => f.id !== fileId)
+    if (files.length <= 1) return
+    const newFiles = files.filter((f) => f.id !== fileId)
     setFiles(newFiles)
-    
-    if (activeFileId === fileId) {
-      setActiveFileId(newFiles[0].id)
-    }
+    if (activeFileId === fileId) setActiveFileId(newFiles[0].id)
   }
 
   const updateFileContent = (fileId: string, content: string) => {
-    setFiles(files.map(f => 
-      f.id === fileId ? { ...f, content } : f
-    ))
+    setFiles(files.map((f) => (f.id === fileId ? { ...f, content } : f)))
   }
 
   const runCode = async () => {
     setIsRunning(true)
     setOutput("")
-    
+
     try {
       if (!mainFile) {
         setOutput("Error: No Main.java file found. Please create a Main.java file with a main method.")
@@ -137,30 +106,20 @@ const [files, setFiles] = useState<JavaFile[]>([
       const response = await fetch("/api/run-java", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          files: files.map(f => ({
-            name: f.name,
-            content: f.content
-          })),
-          mainClass: "Main"
+        body: JSON.stringify({
+          files: files.map((f) => ({ name: f.name, content: f.content })),
+          mainClass: "Main",
         }),
       })
-      
+
       const data = await response.json()
       setOutput(data.output)
-      
-      // Check if output matches expected output
+
       if (expectedOutput) {
-        const outputTrimmed = data.output.trim()
-        const expectedTrimmed = expectedOutput.trim()
-        const matches = outputTrimmed === expectedTrimmed
-        
+        const matches = data.output.trim() === expectedOutput.trim()
         if (matches) {
           setAllTestsPassed(true)
-          // Call onSuccess callback immediately to show checkmark
-          if (onSuccess) {
-            onSuccess() // Call immediately for instant feedback
-          }
+          if (onSuccess) onSuccess()
         } else {
           setAllTestsPassed(false)
         }
@@ -172,392 +131,156 @@ const [files, setFiles] = useState<JavaFile[]>([
   }
 
   const resetCode = () => {
-setFiles([
-  {
-    id: "1",
-    name: "Main.java",
-    content: starterCode || `public class Main {
-  public static void main(String[] args) {
-    System.out.println("Hello");
-  }
-}`,
-  }
-])
-
+    setFiles([{ id: "1", name: "Main.java", content: defaultCode }])
     setActiveFileId("1")
     setOutput("")
-    setTestResults([])
     setAllTestsPassed(false)
   }
 
-  const cycleTabLayout = () => {
-    const layouts: TabLayout[] = ["horizontal", "vertical-left", "vertical-right"]
-    const currentIndex = layouts.indexOf(tabLayout)
-    const nextIndex = (currentIndex + 1) % layouts.length
-    setTabLayout(layouts[nextIndex])
-  }
+  const isCorrect = expectedOutput && output && output.trim() === expectedOutput.trim()
+  const isIncorrect = expectedOutput && output && output.trim() !== expectedOutput.trim()
 
-  const renderTabs = () => {
-    if (tabLayout === "horizontal") {
-      return (
-        <div className="flex items-center border-b border-border mb-4">
-          <div className="flex flex-1 overflow-x-auto">
-            {files.map((file, index) => (
-              <div
-                key={file.id}
-                className={`flex items-center gap-2 px-4 py-2 cursor-pointer transition-colors border-r border-border last:border-r-0 ${
-                  activeFileId === file.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-accent text-muted-foreground"
-                }`}
-                onClick={() => setActiveFileId(file.id)}
-              >
-                <span className="text-sm font-medium truncate">{file.name}</span>
-                {file.name === "Main.java" && (
-                  <Badge variant="secondary" className="text-xs">
-                    Main
-                  </Badge>
-                )}
-                {files.length > 1 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeFile(file.id)
-                    }}
-                    className="ml-1 hover:text-destructive"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
-            ))}
+  return (
+    <div className="space-y-3">
+      <div className="rounded-2xl border border-border bg-card/80 backdrop-blur-sm overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-border bg-secondary/30">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-400/70" />
+              <div className="w-3 h-3 rounded-full bg-amber-400/70" />
+              <div className="w-3 h-3 rounded-full bg-emerald-400/70" />
+            </div>
+            <span className="text-xs text-muted-foreground font-medium ml-2">Code Editor</span>
           </div>
-          
-          {!showAddFile ? (
+          <div className="flex items-center gap-2">
             <Button
+              onClick={resetCode}
               variant="ghost"
               size="sm"
-              onClick={() => setShowAddFile(true)}
-              className="ml-2"
+              disabled={isRunning || readOnly}
+              className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
             >
-              <Plus className="h-4 w-4" />
+              <RotateCcw className="h-3 w-3" />
+              Reset
             </Button>
-          ) : (
-            <div className="flex items-center gap-2 ml-2">
-              <Input
-                value={newFileName}
-                onChange={(e) => setNewFileName(e.target.value)}
-                placeholder="FileName.java"
-                className="w-32 h-8 text-sm"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') addFile()
-                  if (e.key === 'Escape') {
-                    setShowAddFile(false)
-                    setNewFileName("")
-                  }
-                }}
-                autoFocus
-              />
-              <Button size="sm" onClick={addFile} className="h-8 px-2">
-                Add
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setShowAddFile(false)
-                  setNewFileName("")
-                }}
-                className="h-8 px-2"
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    // Vertical tabs
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-muted-foreground">Files</span>
-          {!showAddFile ? (
             <Button
-              variant="ghost"
+              onClick={runCode}
+              disabled={isRunning || readOnly}
               size="sm"
-              onClick={() => setShowAddFile(true)}
-              className="h-6 w-6 p-0"
+              className="h-7 text-xs gap-1.5 gradient-primary text-white border-0 shadow-sm"
             >
-              <Plus className="h-3 w-3" />
+              {isRunning ? (
+                <><Loader2 className="h-3 w-3 animate-spin" /> Running...</>
+              ) : (
+                <><Play className="h-3 w-3" /> Run Code</>
+              )}
             </Button>
-          ) : (
-            <div className="flex items-center gap-1">
-              <Input
-                value={newFileName}
-                onChange={(e) => setNewFileName(e.target.value)}
-                placeholder="File.java"
-                className="w-20 h-6 text-xs"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') addFile()
-                  if (e.key === 'Escape') {
-                    setShowAddFile(false)
-                    setNewFileName("")
-                  }
-                }}
-                autoFocus
-              />
-              <Button size="sm" onClick={addFile} className="h-6 px-1 text-xs">
-                +
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setShowAddFile(false)
-                  setNewFileName("")
-                }}
-                className="h-6 w-6 p-0"
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex items-center border-b border-border bg-secondary/20 overflow-x-auto">
           {files.map((file) => (
             <div
               key={file.id}
-              className={`flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors border-l-2 ${
+              className={`flex items-center gap-2 px-3 py-2 cursor-pointer text-xs transition-colors border-r border-border last:border-r-0 ${
                 activeFileId === file.id
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-muted hover:bg-accent text-muted-foreground border-transparent"
+                  ? "bg-card text-foreground border-b-2 border-b-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
               onClick={() => setActiveFileId(file.id)}
             >
-              <span className="text-sm font-medium truncate flex-1">{file.name}</span>
+              <FileCode className="h-3 w-3" />
+              <span className="font-medium">{file.name}</span>
               {file.name === "Main.java" && (
-                <Badge variant="secondary" className="text-xs">
-                  Main
-                </Badge>
+                <Badge variant="secondary" className="text-[9px] h-4 px-1">main</Badge>
               )}
               {files.length > 1 && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeFile(file.id)
-                  }}
-                  className="hover:text-destructive"
+                  onClick={(e) => { e.stopPropagation(); removeFile(file.id) }}
+                  className="hover:text-destructive ml-0.5 opacity-50 hover:opacity-100"
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-2.5 w-2.5" />
                 </button>
               )}
             </div>
           ))}
-        </div>
-      </div>
-    )
-  }
-
-  const renderCodeEditor = () => {
-    if (tabLayout === "horizontal") {
-      return (
-        <div>
-          {renderTabs()}
-          {activeFile && (
-            <div className="mb-2">
-              <span className="text-sm text-muted-foreground">
-                {activeFile.name}
-                {activeFile.name === "Main.java" && " (Entry point)"}
-              </span>
+          {!showAddFile ? (
+            <button
+              onClick={() => setShowAddFile(true)}
+              className="px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Plus className="h-3 w-3" />
+            </button>
+          ) : (
+            <div className="flex items-center gap-1 px-2 py-1">
+              <Input
+                value={newFileName}
+                onChange={(e) => setNewFileName(e.target.value)}
+                placeholder="File.java"
+                className="w-24 h-6 text-xs rounded-md"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addFile()
+                  if (e.key === "Escape") { setShowAddFile(false); setNewFileName("") }
+                }}
+                autoFocus
+              />
+              <Button size="sm" onClick={addFile} className="h-6 px-2 text-[10px]">Add</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => { setShowAddFile(false); setNewFileName("") }}
+                className="h-6 w-6 p-0"
+              >
+                <X className="h-2.5 w-2.5" />
+              </Button>
             </div>
           )}
-          {activeFile && (
+        </div>
+        {activeFile && (
+          <div className="relative">
             <Textarea
               value={activeFile.content}
               onChange={(e) => updateFileContent(activeFile.id, e.target.value)}
-              className="font-mono text-sm min-h-[300px] resize-none bg-muted border-border text-card-foreground"
+              className="font-mono text-sm min-h-[280px] resize-none bg-transparent border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 p-4 code-textarea text-foreground"
               placeholder="Write your Java code here..."
               readOnly={readOnly}
+              spellCheck={false}
             />
-          )}
-        </div>
-      )
-    }
-
-    // Vertical layout
-    return (
-      <div className="flex h-[400px]">
-        {tabLayout === "vertical-left" && (
-          <>
-            <div className="w-[200px] border-r border-border pr-2">
-              {renderTabs()}
-            </div>
-            <div className="flex-1 pl-2">
-              {activeFile && (
-                <div className="mb-2">
-                  <span className="text-sm text-muted-foreground">
-                    {activeFile.name}
-                    {activeFile.name === "Main.java" && " (Entry point)"}
-                  </span>
-                </div>
-              )}
-              {activeFile && (
-                <Textarea
-                  value={activeFile.content}
-                  onChange={(e) => updateFileContent(activeFile.id, e.target.value)}
-                  className="font-mono text-sm h-full resize-none bg-muted border-border text-card-foreground"
-                  placeholder="Write your Java code here..."
-                  readOnly={readOnly}
-                />
-              )}
-            </div>
-          </>
-        )}
-        
-        {tabLayout === "vertical-right" && (
-          <>
-            <div className="flex-1 pr-2">
-              {activeFile && (
-                <div className="mb-2">
-                  <span className="text-sm text-muted-foreground">
-                    {activeFile.name}
-                    {activeFile.name === "Main.java" && " (Entry point)"}
-                  </span>
-                </div>
-              )}
-              {activeFile && (
-                <Textarea
-                  value={activeFile.content}
-                  onChange={(e) => updateFileContent(activeFile.id, e.target.value)}
-                  className="font-mono text-sm h-full resize-none bg-muted border-border text-card-foreground"
-                  placeholder="Write your Java code here..."
-                  readOnly={readOnly}
-                />
-              )}
-            </div>
-            <div className="w-[200px] border-l border-border pl-2">
-              {renderTabs()}
-            </div>
-          </>
+          </div>
         )}
       </div>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      <Card className="border-border">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg text-card-foreground">Code Editor</CardTitle>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={cycleTabLayout}
-                className="flex items-center gap-1"
-              >
-                {tabLayout === "horizontal" ? (
-                  <PanelLeft className="h-4 w-4" />
-                ) : (
-                  <PanelRight className="h-4 w-4" />
-                )}
-                {tabLayout === "horizontal" ? "Top" : tabLayout === "vertical-left" ? "Left" : "Right"}
-              </Button>
-              <Button onClick={resetCode} variant="outline" size="sm" disabled={isRunning}>
-                <RotateCcw className="h-4 w-4 mr-1" />
-                Reset
-              </Button>
-              <Button onClick={runCode} disabled={isRunning || readOnly} size="sm">
-                <Play className="h-4 w-4 mr-1" />
-                {isRunning ? "Running..." : "Run Code"}
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {renderCodeEditor()}
-        </CardContent>
-      </Card>
-
       {output && (
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg text-card-foreground">Output</CardTitle>
-                {expectedOutput && (
-                  <Badge variant={output.trim() === expectedOutput.trim() ? "default" : "secondary"}>
-                    {output.trim() === expectedOutput.trim() ? (
-                      <>
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Correct!
-                      </>
-                    ) : (
-                      <>
-                        <X className="h-3 w-3 mr-1" />
-                        Try Again
-                      </>
-                    )}
-                  </Badge>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <pre className="bg-muted p-3 rounded text-sm font-mono whitespace-pre-wrap border border-border text-card-foreground">{output}</pre>
-              {expectedOutput && (
-                <div className="mt-3 p-3 bg-accent rounded border border-border">
-                  <p className="text-sm font-medium text-accent-foreground mb-1">Expected Output:</p>
-                  <pre className="text-sm font-mono text-card-foreground">{expectedOutput}</pre>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-      {/* testCases.length > 0 && testResults.length > 0 && (
-        <Card className="border-border">
-          <CardHeader>
-            <CardTitle className="text-lg text-card-foreground">Test Results</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {testCases.map((testCase, index) => (
-                <div key={index} className="border border-border rounded p-3 bg-muted">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-sm text-card-foreground">{testCase.description}</span>
-                    <Badge variant={testResults[index]?.passed ? "default" : "destructive"}>
-                      {testResults[index]?.passed ? (
-                        <>
-                          <Check className="h-3 w-3 mr-1" />
-                          Passed
-                        </>
-                      ) : (
-                        <>
-                          <X className="h-3 w-3 mr-1" />
-                          Failed
-                        </>
-                      )}
-                    </Badge>
-                  </div>
-                  <div className="text-xs space-y-1 text-muted-foreground">
-                    <div>
-                      <span className="font-medium text-card-foreground">Input:</span> {testCase.input}
-                    </div>
-                    <div>
-                      <span className="font-medium text-card-foreground">Expected:</span> {testCase.expectedOutput}
-                    </div>
-                    <div>
-                      <span className="font-medium text-card-foreground">Got:</span> {testResults[index]?.output}
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <div className={`rounded-2xl border overflow-hidden animate-scale-in ${
+          isCorrect ? "border-emerald-500/30 bg-emerald-500/5" : isIncorrect ? "border-amber-500/30 bg-amber-500/5" : "border-border bg-card/80"
+        }`}>
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-xs font-medium text-muted-foreground">Output</span>
             </div>
-          </CardContent>
-        </Card>
-      ) */}
+            {expectedOutput && (
+              <Badge
+                variant={isCorrect ? "default" : "secondary"}
+                className={`text-[10px] gap-1 ${isCorrect ? "bg-emerald-500 text-white" : ""}`}
+              >
+                {isCorrect ? (
+                  <><CheckCircle className="h-2.5 w-2.5" /> Correct!</>
+                ) : (
+                  <><XCircle className="h-2.5 w-2.5" /> Try Again</>
+                )}
+              </Badge>
+            )}
+          </div>
+          <div className="p-4">
+            <pre className="font-mono text-sm whitespace-pre-wrap text-foreground leading-relaxed">{output}</pre>
+            {expectedOutput && isIncorrect && (
+              <div className="mt-3 pt-3 border-t border-border/50">
+                <p className="text-xs font-medium text-muted-foreground mb-1">Expected Output:</p>
+                <pre className="font-mono text-xs text-muted-foreground whitespace-pre-wrap">{expectedOutput}</pre>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

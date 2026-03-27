@@ -1,269 +1,430 @@
-'use client'
+"use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { ArrowLeft, ArrowRight, BookOpen, Code2, CheckCircle } from "lucide-react"
+import {
+  ArrowLeft,
+  BookOpen,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Code2,
+  GraduationCap,
+  Lightbulb,
+  Target,
+} from "lucide-react"
+import Navbar from "@/components/shared/navbar"
 import CodeEditor from "@/components/code-editor"
-import Settings from "@/components/settings"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { moduleNameMap } from "@/lib/course-data"
 import { moduleContent } from "@/lib/module-content"
+import type { PracticeLesson, UserLessonProgress } from "@/types/course"
 
 interface LessonViewerProps {
   moduleId: number
+  initialLessonId?: string | null
   onBack: () => void
-  userProgress?: Record<number, { completed: number; lessons: Record<string, boolean> }>
+  onLessonChange?: (lessonId: string) => void
+  userProgress?: Record<number, UserLessonProgress>
   onProgressUpdate?: () => void
 }
 
-export default function LessonViewer({ moduleId, onBack, userProgress, onProgressUpdate }: LessonViewerProps) {
+export default function LessonViewer({
+  moduleId,
+  initialLessonId = null,
+  onBack,
+  onLessonChange,
+  userProgress,
+  onProgressUpdate,
+}: LessonViewerProps) {
   const { data: session } = useSession()
-  const lessons = moduleContent[moduleId] || []
+  const lessons = useMemo(() => moduleContent[moduleId] ?? [], [moduleId])
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0)
   const [completedLessons, setCompletedLessons] = useState<Record<string, boolean>>({})
-  const currentLesson = lessons[currentLessonIndex]
 
-  const handleLessonComplete = useCallback(async (lessonId: string) => {
-    const lesson = lessons.find(l => l.id === lessonId)
-    if (!lesson) return
-    
-    lesson.completed = true
-    
-    // Save progress if user is signed in
-    if (session?.user && lessonId) {
+  const currentLesson = lessons[currentLessonIndex]
+  const completedCount = Object.values(completedLessons).filter(Boolean).length
+  const progressPercent = lessons.length > 0 ? (completedCount / lessons.length) * 100 : 0
+
+  const handleLessonComplete = useCallback(
+    async (lessonId: string) => {
+      if (!session?.user || !lessonId) {
+        return
+      }
+
       try {
         const response = await fetch("/api/progress", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            moduleId,
-            lessonId: lessonId,
-          }),
+          body: JSON.stringify({ moduleId, lessonId }),
         })
-        
-        if (response.ok) {
-          setCompletedLessons((prev) => ({
-            ...prev,
-            [lessonId]: true,
-          }))
-          
-          // Refresh progress in parent component
-          if (onProgressUpdate) {
-            setTimeout(() => onProgressUpdate(), 500)
-          }
+
+        if (!response.ok) {
+          return
+        }
+
+        setCompletedLessons((prev) => ({ ...prev, [lessonId]: true }))
+
+        if (onProgressUpdate) {
+          setTimeout(() => onProgressUpdate(), 300)
         }
       } catch (error) {
         console.error("Error saving progress:", error)
       }
-    }
-  }, [session, moduleId, lessons, onProgressUpdate])
+    },
+    [moduleId, onProgressUpdate, session?.user]
+  )
 
   useEffect(() => {
-    // Load completed lessons from user progress
-    if (userProgress?.[moduleId]?.lessons) {
-      setCompletedLessons(userProgress[moduleId].lessons)
-      // Mark lessons as completed in the lessons array
-      lessons.forEach((lesson) => {
-        if (userProgress[moduleId].lessons[lesson.id]) {
-          lesson.completed = true
-        }
-      })
-    }
+    const nextCompletedLessons = userProgress?.[moduleId]?.lessons ?? {}
+    setCompletedLessons(nextCompletedLessons)
   }, [moduleId, userProgress])
 
-  // Mark theory lessons as completed when viewed (after a short delay)
   useEffect(() => {
-    if (currentLesson && currentLesson.type === 'theory' && session?.user && currentLesson.id) {
-      const timer = setTimeout(() => {
-        // Only mark as completed if not already completed
-        if (!completedLessons[currentLesson.id]) {
-          handleLessonComplete(currentLesson.id)
-        }
-      }, 2000) // Mark as completed after 2 seconds of viewing
-      
-      return () => clearTimeout(timer)
+    if (!lessons.length) {
+      setCurrentLessonIndex(0)
+      return
     }
-  }, [currentLessonIndex, session, currentLesson, completedLessons, handleLessonComplete])
+
+    if (!initialLessonId) {
+      setCurrentLessonIndex(0)
+      return
+    }
+
+    const initialIndex = lessons.findIndex((lesson) => lesson.id === initialLessonId)
+    setCurrentLessonIndex(initialIndex >= 0 ? initialIndex : 0)
+  }, [initialLessonId, lessons])
+
+  useEffect(() => {
+    if (!currentLesson?.id || !onLessonChange) {
+      return
+    }
+
+    onLessonChange(currentLesson.id)
+  }, [currentLesson?.id, onLessonChange])
+
+  useEffect(() => {
+    if (
+      !session?.user ||
+      !currentLesson?.id ||
+      currentLesson.type !== "theory" ||
+      completedLessons[currentLesson.id]
+    ) {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      void handleLessonComplete(currentLesson.id)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [completedLessons, currentLesson, handleLessonComplete, session?.user])
 
   const handleNext = () => {
     if (currentLessonIndex < lessons.length - 1) {
-      setCurrentLessonIndex(currentLessonIndex + 1)
+      setCurrentLessonIndex((index) => index + 1)
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
 
   const handlePrevious = () => {
     if (currentLessonIndex > 0) {
-      setCurrentLessonIndex(currentLessonIndex - 1)
+      setCurrentLessonIndex((index) => index - 1)
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
   }
 
   const handleExerciseSuccess = async () => {
-    const lesson = lessons[currentLessonIndex]
-    if (lesson?.id) {
-      // Immediately update local state to show checkmark
-      setCompletedLessons((prev) => ({
-        ...prev,
-        [lesson.id]: true,
-      }))
-      lesson.completed = true
-      
-      // Then save to server
-      await handleLessonComplete(lesson.id)
+    if (currentLesson?.type !== "practice") {
+      return
     }
+
+    setCompletedLessons((prev) => ({ ...prev, [currentLesson.id]: true }))
+    await handleLessonComplete(currentLesson.id)
+  }
+
+  const renderContent = (content: string) => {
+    return content
+      .replace(
+        /```java\n([\s\S]*?)\n```/g,
+        '<pre class="mb-4 overflow-x-auto rounded-xl border border-border bg-secondary/80 p-4 text-sm"><code class="font-mono text-foreground">$1</code></pre>'
+      )
+      .replace(
+        /```\n([\s\S]*?)\n```/g,
+        '<pre class="mb-4 overflow-x-auto rounded-xl border border-border bg-secondary/80 p-4 text-sm"><code class="font-mono text-foreground">$1</code></pre>'
+      )
+      .replace(
+        /`([^`]+)`/g,
+        '<code class="rounded bg-secondary px-1.5 py-0.5 font-mono text-sm font-medium text-primary">$1</code>'
+      )
+      .replace(/^# (.*$)/gm, '<h1 class="mb-5 mt-0 text-2xl font-bold text-foreground">$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2 class="mb-4 mt-8 text-xl font-semibold text-foreground">$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3 class="mb-3 mt-6 text-lg font-semibold text-foreground">$1</h3>')
+      .replace(/\*\*(.*?)\*\*/gm, "<strong class='font-semibold text-foreground'>$1</strong>")
+      .replace(/^- (.*$)/gm, '<li class="ml-4 leading-relaxed text-muted-foreground">- $1</li>')
   }
 
   if (!currentLesson) {
     return (
-      <div className="min-h-screen bg-background p-8">
-        <Settings />
-        <div className="container mx-auto">
-          <Button onClick={onBack} variant="outline" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Modules
-          </Button>
-          <Card className="border-border">
-            <CardContent className="p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4 text-card-foreground">Module Content Coming Soon</h2>
-              <p className="text-muted-foreground">This module's lessons are being prepared. Check back soon!</p>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-background">
+        <Navbar showBack onBack={onBack} title={`Module ${moduleId}`} />
+        <div className="container mx-auto px-4 md:px-6 py-16">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl gradient-primary">
+              <BookOpen className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="mb-4 text-2xl font-bold text-foreground">Content coming soon</h2>
+            <p className="mb-6 text-muted-foreground">
+              This module is still being assembled. Head back to the roadmap and keep working through the available units.
+            </p>
+            <Button onClick={onBack} variant="outline" className="gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to modules
+            </Button>
+          </div>
         </div>
       </div>
     )
   }
 
+  const isCurrentLessonComplete = Boolean(completedLessons[currentLesson.id])
+  const practiceLesson =
+    currentLesson.type === "practice" ? (currentLesson as PracticeLesson) : null
+
   return (
-    <div className="min-h-screen bg-background">
-      <Settings />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <Button onClick={onBack} variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Modules
-          </Button>
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">Module {moduleId}</h1>
-            <p className="text-muted-foreground">
-              Lesson {currentLessonIndex + 1} of {lessons.length}
-            </p>
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar
+        showBack
+        onBack={onBack}
+        title={moduleNameMap[moduleId] || `Module ${moduleId}`}
+        subtitle={`Lesson ${currentLessonIndex + 1} of ${lessons.length}`}
+      />
+
+      <div className="border-b border-border bg-card/50">
+        <div className="container mx-auto px-4 md:px-6 py-3">
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Badge variant={currentLesson.type === "theory" ? "secondary" : "default"} className="gap-1 text-xs">
+                {currentLesson.type === "theory" ? (
+                  <>
+                    <BookOpen className="h-3 w-3" /> Theory
+                  </>
+                ) : (
+                  <>
+                    <Code2 className="h-3 w-3" /> Practice
+                  </>
+                )}
+              </Badge>
+              <span className="text-sm font-medium text-foreground">{currentLesson.title}</span>
+              {isCurrentLessonComplete && <CheckCircle className="h-4 w-4 text-emerald-400" />}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {completedCount}/{lessons.length} completed
+            </span>
           </div>
-          <div className="w-24" />
+          <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full rounded-full gradient-primary transition-all duration-700 ease-out"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
+      </div>
 
-        <div className="mb-6">
-          <Progress value={((currentLessonIndex + 1) / lessons.length) * 100} className="h-2" />
-        </div>
+      <div className="container mx-auto flex-1 px-4 py-8 md:px-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[280px_1fr]">
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <div className="overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-sm">
+                <div className="border-b border-border p-4">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <GraduationCap className="h-4 w-4 text-primary" />
+                    Lesson navigation
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {completedCount} of {lessons.length} complete
+                  </p>
+                </div>
+                <div className="max-h-[60vh] overflow-y-auto p-2">
+                  {lessons.map((lesson, index) => {
+                    const isActive = index === currentLessonIndex
+                    const isDone = Boolean(completedLessons[lesson.id])
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
-            <Card className="border-border">
-              <CardHeader>
-                <CardTitle className="text-lg text-card-foreground">Lessons</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {lessons.map((lesson, index) => (
-                    <button
-                      key={lesson.id}
-                      onClick={() => setCurrentLessonIndex(index)}
-                      className={`w-full text-left p-3 rounded-lg transition-colors border ${
-                        index === currentLessonIndex
-                          ? "bg-blue-900/20 border-blue-400 text-blue-100"
-                          : "bg-card hover:bg-accent border-border text-card-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {lesson.type === "theory" && <BookOpen className="h-4 w-4" />}
-                          {lesson.type === "practice" && <Code2 className="h-4 w-4" />}
-                          <span className="text-sm font-medium">{lesson.title}</span>
+                    return (
+                      <button
+                        key={lesson.id}
+                        onClick={() => {
+                          setCurrentLessonIndex(index)
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }}
+                        className={`mb-0.5 flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition-all ${
+                          isActive
+                            ? "bg-primary/10 font-medium text-primary"
+                            : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                        }`}
+                      >
+                        <div className="shrink-0">
+                          {isDone ? (
+                            <CheckCircle className="h-4 w-4 text-emerald-400" />
+                          ) : (
+                            <div
+                              className={`flex h-4 w-4 items-center justify-center rounded-full border-2 text-[8px] font-bold ${
+                                isActive ? "border-primary text-primary" : "border-muted-foreground/30"
+                              }`}
+                            >
+                              {index + 1}
+                            </div>
+                          )}
                         </div>
-                        {(lesson.completed || completedLessons[lesson.id]) && <CheckCircle className="h-4 w-4 text-green-400" />}
-                      </div>
-                      <Badge variant="secondary" className="mt-1 text-xs">
-                        {lesson.type}
-                      </Badge>
-                    </button>
-                  ))}
+                        <span className="flex-1 truncate">{lesson.title}</span>
+                        <div className="shrink-0">
+                          {lesson.type === "theory" ? (
+                            <BookOpen className="h-3 w-3 opacity-40" />
+                          ) : (
+                            <Code2 className="h-3 w-3 opacity-40" />
+                          )}
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </aside>
 
-          <div className="lg:col-span-3">
-            <Card className="border-border">
-              <CardHeader>
-                <div className="flex items-center justify-between">
+          <div className="min-w-0">
+            <article className="animate-fade-in overflow-hidden rounded-2xl border border-border bg-card/80 backdrop-blur-sm">
+              <div className="border-b border-border p-6 md:p-8">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <CardTitle className="text-xl text-card-foreground">{currentLesson.title}</CardTitle>
-                    <Badge variant="outline" className="mt-2">
-                      {currentLesson.type}
-                    </Badge>
+                    <div className="mb-2 flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {currentLesson.type === "theory" ? "Theory" : "Practice"}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        Lesson {currentLessonIndex + 1} of {lessons.length}
+                      </span>
+                    </div>
+                    <h1 className="text-2xl font-bold text-foreground">{currentLesson.title}</h1>
                   </div>
-                  {(currentLesson.completed || completedLessons[currentLesson.id]) && <CheckCircle className="h-6 w-6 text-green-400" />}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none mb-6 prose-invert">
-                  <div
-                    className="whitespace-pre-wrap text-card-foreground"
-                    dangerouslySetInnerHTML={{
-                      __html: (currentLesson.content ?? "")
-                        .replace(
-                          /```java\n([\s\S]*?)\n```/g,
-                          '<pre class="bg-muted p-4 rounded-lg overflow-x-auto border border-border"><code class="text-card-foreground">$1</code></pre>'
-                        )
-                        .replace(/`([^`]+)`/g, '<code class="bg-muted px-1 rounded text-card-foreground">$1</code>')
-                        .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mb-4 text-card-foreground">$1</h1>')
-                        .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mb-3 mt-6 text-card-foreground">$1</h2>')
-                        .replace(/\*\*(.*?)\*\*/gm, "<strong class='text-card-foreground'>$1</strong>")
-                    }}
-                  ></div>
-
-                  {currentLesson.codeExample && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold mb-3 text-card-foreground">Example:</h3>
-                      <CodeEditor initialCode={currentLesson.codeExample} readOnly={true} />
+                  {isCurrentLessonComplete && (
+                    <div className="flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5">
+                      <CheckCircle className="h-4 w-4 text-emerald-400" />
+                      <span className="text-xs font-semibold text-emerald-400">Completed</span>
                     </div>
                   )}
-
-                  {currentLesson.exercise && (
-                    <div className="mb-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-lg font-semibold text-card-foreground">Exercise:</h3>
-                        {(currentLesson.completed || completedLessons[currentLesson.id]) && (
-                          <div className="flex items-center gap-2 text-green-500">
-                            <CheckCircle className="h-5 w-5" />
-                            <span className="text-sm font-medium">Completed!</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-muted-foreground mb-4">{currentLesson.exercise.description}</p>
-                        <CodeEditor
-                          starterCode={currentLesson.exercise.starterCode}
-                          readOnly={false}
-                          expectedOutput={currentLesson.exercise.expectedOutput}
-                          testCases={currentLesson.exercise.testCases}
-                          onSuccess={handleExerciseSuccess}
-                        />
-                    </div>
-                  )}
-
-                  <div className="flex justify-between mt-8">
-                    <Button onClick={handlePrevious} disabled={currentLessonIndex === 0} variant="outline">
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Previous
-                    </Button>
-                    <Button onClick={handleNext} disabled={currentLessonIndex === lessons.length - 1}>
-                      Next
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {currentLesson.type === "theory" && (
+                  <div className="mt-4 flex items-start gap-2 rounded-xl border border-primary/10 bg-primary/5 p-3">
+                    <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Learning objective:</span>{" "}
+                      Read the explanation and examples below. Signed-in students get this lesson marked complete automatically after a short view.
+                    </p>
+                  </div>
+                )}
+
+                {practiceLesson && (
+                  <div className="mt-4 flex items-start gap-2 rounded-xl border border-emerald-500/10 bg-emerald-500/5 p-3">
+                    <Target className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    <p className="text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Practice goal:</span>{" "}
+                      Write code that matches the expected output, then run it until the drill passes cleanly.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 md:p-8">
+                <div
+                  className="lesson-prose"
+                  dangerouslySetInnerHTML={{
+                    __html: renderContent(currentLesson.content ?? ""),
+                  }}
+                />
+
+                {currentLesson.codeExample && (
+                  <div className="mt-6">
+                    <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-foreground">
+                      <Code2 className="h-4 w-4 text-primary" />
+                      Code example
+                    </h3>
+                    <CodeEditor initialCode={currentLesson.codeExample} readOnly />
+                  </div>
+                )}
+
+                {practiceLesson && (
+                  <div className="mt-8 border-t border-border pt-8">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                        <Code2 className="h-4 w-4 text-primary" />
+                        Coding exercise
+                      </h3>
+                      {isCurrentLessonComplete && (
+                        <div className="flex items-center gap-1.5 text-emerald-400">
+                          <CheckCircle className="h-4 w-4" />
+                          <span className="text-xs font-semibold">Solved</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mb-5 rounded-xl border border-border bg-secondary/30 p-4">
+                      <p className="text-sm text-muted-foreground">{practiceLesson.exercise.description}</p>
+                    </div>
+                    <CodeEditor
+                      starterCode={practiceLesson.exercise.starterCode}
+                      expectedOutput={practiceLesson.exercise.expectedOutput}
+                      testCases={practiceLesson.exercise.testCases}
+                      onSuccess={handleExerciseSuccess}
+                    />
+                  </div>
+                )}
+
+                <div className="mt-10 flex items-center justify-between border-t border-border pt-8">
+                  <Button
+                    onClick={handlePrevious}
+                    disabled={currentLessonIndex === 0}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+
+                  <div className="hidden items-center gap-1 sm:flex">
+                    {lessons.map((lesson, index) => (
+                      <button
+                        key={lesson.id}
+                        onClick={() => {
+                          setCurrentLessonIndex(index)
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }}
+                        className={`h-2 rounded-full transition-all ${
+                          index === currentLessonIndex
+                            ? "w-6 bg-primary"
+                            : completedLessons[lesson.id]
+                              ? "w-2 bg-emerald-400"
+                              : "w-2 bg-border hover:bg-muted-foreground/30"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {currentLessonIndex < lessons.length - 1 ? (
+                    <Button onClick={handleNext} className="gap-2 gradient-primary text-white border-0">
+                      Next lesson
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button onClick={onBack} className="gap-2 gradient-primary text-white border-0">
+                      Back to modules
+                      <CheckCircle className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </div>

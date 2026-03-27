@@ -1,12 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import fs from "fs"
-import { exec } from "child_process"
-import path from "path"
-
-interface JavaFile {
-  name: string
-  content: string
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -23,110 +15,60 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "No main class specified" })
   }
 
-  console.log("Using mainClass:", mainClass)
-  console.log("Files:", files.map(f => f.name))
-
-  const tmpDir = "/tmp"
-  const javaFiles: string[] = []
-
   try {
-    // Write all Java files
-    for (const file of files) {
-      const javaFilePath = path.join(tmpDir, file.name)
-      fs.writeFileSync(javaFilePath, file.content)
-      javaFiles.push(javaFilePath)
-    }
 
-    // Check if Java is available first
-    exec("which javac", (checkError) => {
-      if (checkError) {
-        // Clean up files
-        javaFiles.forEach(filePath => {
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath)
-          }
-        })
-        return res.status(200).json({ 
-          output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
-        })
+    let sourceCode = ""
+    let mainCode = ""
+
+    files.forEach((f: any) => {
+      if (f.name === "Main.java" || f.content.includes("public static void main")) {
+        mainCode = f.content
+      } else {
+
+        sourceCode += f.content.replace(/public\s+class/g, "class") + "\n\n"
       }
+    })
 
-      // Compile all files
-      const compileCommand = `javac ${javaFiles.join(" ")}`
 
-      exec(compileCommand, (compileError, stdout, stderr) => {
-        if (compileError || stderr) {
-          // Check if it's a Java not found error
-          const errorMsg = stderr || compileError?.message || ""
-          if (errorMsg.includes("Unable to locate a Java Runtime") || errorMsg.includes("java: command not found") || errorMsg.includes("javac: command not found")) {
-            // Clean up files
-            javaFiles.forEach(filePath => {
-              if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath)
-              }
-              const classFilePath = filePath.replace(".java", ".class")
-              if (fs.existsSync(classFilePath)) {
-                fs.unlinkSync(classFilePath)
-              }
-            })
-            return res.status(200).json({ 
-              output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
-            })
-          }
-          
-          // Clean up files
-          javaFiles.forEach(filePath => {
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath)
-            }
-            const classFilePath = filePath.replace(".java", ".class")
-            if (fs.existsSync(classFilePath)) {
-              fs.unlinkSync(classFilePath)
-            }
-          })
-          return res.status(200).json({ output: `Compilation Error:\n${stderr}` })
-        }
+    const combinedCode = sourceCode + mainCode
 
-        // Run the main class
-        const runCommand = `java -cp ${tmpDir} ${mainClass}`
 
-        exec(runCommand, (runError, runStdout, runStderr) => {
-          // Clean up files
-          javaFiles.forEach(filePath => {
-            if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath)
-            }
-            const classFilePath = filePath.replace(".java", ".class")
-            if (fs.existsSync(classFilePath)) {
-              fs.unlinkSync(classFilePath)
-            }
-          })
-
-          if (runError || runStderr) {
-            const errorMsg = runStderr || runError?.message || ""
-            if (errorMsg.includes("Unable to locate a Java Runtime") || errorMsg.includes("java: command not found")) {
-              return res.status(200).json({ 
-                output: `Java is not installed on this system.\n\nTo install Java:\n\n1. Visit: https://adoptium.net/\n2. Download Java 17 (LTS) for macOS\n3. Install the downloaded .pkg file\n4. Restart your development server\n\nOr use Homebrew:\n  brew install openjdk@17` 
-              })
-            }
-            return res.status(200).json({ output: `Runtime Error:\n${runStderr}` })
-          }
-
-          res.status(200).json({ output: runStdout })
-        })
+    const response = await fetch("https://ce.judge0.com/submissions?wait=true", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        source_code: combinedCode,
+        language_id: 62,
+        cpu_time_limit: 5,
+        memory_limit: 128000
       })
     })
-  } catch (error) {
-    // Clean up files on error
-    javaFiles.forEach(filePath => {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath)
-      }
-      const classFilePath = filePath.replace(".java", ".class")
-      if (fs.existsSync(classFilePath)) {
-        fs.unlinkSync(classFilePath)
-      }
+
+    if (!response.ok) {
+        throw new Error(`Execution Service API Error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    
+
+    if (data.compile_output) {
+        return res.status(200).json({ output: `Compilation Error:\n${data.compile_output}` })
+    }
+
+    if (data.stderr) {
+        return res.status(200).json({ output: `Runtime Error:\n${data.stderr}` })
+    }
+
+
+    const stdout = (data.stdout && data.stdout !== null) ? data.stdout : ""
+    return res.status(200).json({ output: stdout })
+
+  } catch (error: any) {
+    console.error("Code execution error:", error)
+    return res.status(500).json({ 
+        output: "Server execution error. Unable to reach execution engine at this time. Details: " + error.message
     })
-    return res.status(500).json({ error: `Server error: ${error}` })
   }
 }

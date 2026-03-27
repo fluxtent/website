@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Settings as SettingsIcon, Moon, Sun, Monitor, Palette } from "lucide-react"
 import { useTheme } from "next-themes"
 import AuthButton from "@/components/auth-button"
@@ -14,37 +12,37 @@ const themes = [
   {
     id: "dark",
     name: "Dark Space",
-    description: "Dark theme with space aesthetics",
+    description: "Deep dark theme — easy on the eyes",
     icon: Moon,
-    preview: "bg-gray-900",
+    preview: "bg-gradient-to-br from-slate-900 to-slate-800",
   },
   {
     id: "light",
     name: "Light Classic",
-    description: "Clean light theme",
+    description: "Clean and bright for daytime",
     icon: Sun,
-    preview: "bg-gray-50",
+    preview: "bg-gradient-to-br from-slate-50 to-slate-100",
   },
   {
     id: "system",
     name: "System",
-    description: "Follows your system preference",
+    description: "Follows your OS preference",
     icon: Monitor,
-    preview: "bg-gradient-to-r from-gray-50 to-gray-900",
+    preview: "bg-gradient-to-r from-slate-50 to-slate-900",
   },
   {
     id: "ocean",
     name: "Ocean Blue",
-    description: "Deep blue ocean theme",
+    description: "Deep blue ocean aesthetic",
     icon: Palette,
     preview: "bg-gradient-to-br from-blue-900 to-blue-700",
   },
   {
     id: "forest",
     name: "Forest Green",
-    description: "Nature-inspired green theme",
+    description: "Nature-inspired dark green",
     icon: Palette,
-    preview: "bg-gradient-to-br from-green-900 to-green-700",
+    preview: "bg-gradient-to-br from-emerald-900 to-emerald-700",
   },
 ]
 
@@ -59,97 +57,88 @@ export default function Settings() {
 
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme)
-    // Force a re-render by updating the document class
     if (typeof document !== 'undefined') {
       document.documentElement.className = newTheme === 'system' ? '' : newTheme
     }
   }
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" className="fixed top-4 right-4 z-50">
+      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg">
         <SettingsIcon className="h-4 w-4" />
       </Button>
     )
   }
 
-  const currentTheme = theme === 'system' ? resolvedTheme : theme
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="fixed top-4 right-4 z-50">
+        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground">
           <SettingsIcon className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[440px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-lg">
             <SettingsIcon className="h-5 w-5" />
             Settings
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-6">
+        <div className="space-y-6 mt-2">
           <div>
-            <h3 className="text-lg font-semibold mb-3">Theme</h3>
-            <div className="grid grid-cols-1 gap-3">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Appearance</h3>
+            <div className="grid grid-cols-1 gap-2">
               {themes.map((themeOption) => {
                 const Icon = themeOption.icon
                 const isActive = theme === themeOption.id
-                
+
                 return (
                   <button
                     key={themeOption.id}
                     onClick={() => handleThemeChange(themeOption.id)}
-                    className={`relative p-4 rounded-lg border transition-all ${
-                      isActive 
-                        ? "border-primary bg-primary/10" 
-                        : "border-border hover:border-primary/50"
+                    className={`relative flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                      isActive
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/30 hover:bg-secondary/50"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded ${themeOption.preview} flex items-center justify-center`}>
-                        <Icon className="h-4 w-4 text-white" />
+                    <div className={`w-8 h-8 rounded-lg ${themeOption.preview} flex items-center justify-center shrink-0`}>
+                      <Icon className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">{themeOption.name}</span>
+                        {isActive && (
+                          <Badge variant="secondary" className="text-[10px] h-5 px-1.5">
+                            Active
+                          </Badge>
+                        )}
                       </div>
-                      <div className="flex-1 text-left">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{themeOption.name}</span>
-                          {isActive && (
-                            <Badge variant="secondary" className="text-xs">
-                              Active
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">{themeOption.description}</p>
-                      </div>
+                      <p className="text-xs text-muted-foreground">{themeOption.description}</p>
                     </div>
                   </button>
                 )
               })}
             </div>
           </div>
-          
-          <div className="pt-4 border-t">
-            <h3 className="text-lg font-semibold mb-3">Account</h3>
-            <div className="mb-4">
+          <div className="pt-4 border-t border-border">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Account</h3>
+            <div className="mb-3">
               <AuthButton />
             </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              Sign in with Google to save your progress across devices
+            <p className="text-xs text-muted-foreground">
+              Sign in with Google to save your progress across devices.
             </p>
           </div>
-          
-          <div className="pt-4 border-t">
-            <h3 className="text-lg font-semibold mb-3">About</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>AP Computer Science A Interactive Learning Platform</p>
-              <p>Version 1.0.0</p>
-              <p>Built with Next.js and Tailwind CSS</p>
+          <div className="pt-4 border-t border-border">
+            <h3 className="text-sm font-semibold text-foreground mb-2">About</h3>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p>CodeCSA — AP Computer Science A Interactive Learning Platform</p>
+              <p>Version 2.0 · Built with Next.js & Tailwind CSS</p>
             </div>
           </div>
         </div>
       </DialogContent>
     </Dialog>
   )
-} 
+}

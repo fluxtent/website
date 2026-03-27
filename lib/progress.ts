@@ -74,7 +74,6 @@ export async function markLessonComplete(
     [lessonId]: true,
   }
   
-  // Count completed lessons (lessons marked as true)
   const completedCount = Object.values(updatedLessons).filter(Boolean).length
   
   const updatedModules = {
