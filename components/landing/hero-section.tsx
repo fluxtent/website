@@ -30,6 +30,7 @@ export default function HeroSection() {
             <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 md:text-lg">
               Move through guided modules, open targeted drills, run code in the browser, and shift into exam prep without juggling tabs or losing your place.
             </p>
+            <p className="mt-3 text-sm font-medium text-slate-400">10k+ users per week</p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="gradient-primary h-12 gap-2 px-6 font-semibold text-white">
